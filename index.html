@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вспышка VPN</title>
+    <!-- Подключаем официальный скрипт Telegram Web App -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* CSS-переменные Telegram автоматически подстраиваются под тему (светлая/темная) */
+        body {
+            background-color: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+        .card {
+            background-color: var(--tg-theme-secondary-bg-color, #f4f4f5);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 0;
+            margin-bottom: 12px;
+        }
+        .text {
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        .btn {
+            background-color: var(--tg-theme-button-color, #2481cc);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            border: none;
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-size: 16px;
+            font-weight: 500;
+            width: 100%;
+            cursor: pointer;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            display: block;
+            text-align: center;
+            text-decoration: none;
+        }
+        .hint {
+            color: var(--tg-theme-hint-color, #707579);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        /* Скрытие неактивных страниц */
+        .page {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- СТРАНИЦА 1: ГЛАВНАЯ (ХОУМ) -->
+    <div id="page-home" class="page active">
+        <div class="card">
+            <h1 class="title">🚀 Вспышка VPN</h1>
+            <p class="text">Добро пожаловать в личный кабинет веб-приложения! Здесь вы можете ознакомиться с нашими юридическими документами.</p>
+        </div>
+        
+        <button class="btn" onclick="showPage('oferta')">📄 Публичная оферта</button>
+        <button class="btn" onclick="showPage('privacy')">🔒 Политика конфиденциальности</button>
+        
+        <div class="hint" style="text-align: center; margin-top: 20px;">
+            Вспышка VPN — Свободный интернет 24/7
+        </div>
+    </div>
+
+    <!-- СТРАНИЦА 2: ПУБЛИЧНАЯ ОФЕРТА -->
+    <div id="page-oferta" class="page">
+        <h1 class="title">📄 Публичная оферта</h1>
+        <div class="text">
+            <b>Пользовательское соглашение</b><br><br>
+            1. <b>Предмет соглашения:</b> Сервис предоставляет услуги доступа к виртуальной приватной сети (VPN) на условиях платной подписки.<br><br>
+            2. <b>Условия оплаты:</b> Оплата подписки производится добровольно через встроенные платежные инструменты (Telegram Stars, CryptoBot).<br><br>
+            3. <b>Отказ от ответственности:</b> Сервис не несёт ответственности за качество соединения, вызванное ограничениями провайдеров связи.<br><br>
+            4. <b>Возврат средств:</b> Цифровые товары надлежащего качества возврату или обмену не подлежат.
+        </div>
+    </div>
+
+    <!-- СТРАНИЦА 3: ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ -->
+    <div id="page-privacy" class="page">
+        <h1 class="title">🔒 Политика конфиденциальности</h1>
+        <div class="text">
+            <b>Защита персональных данных</b><br><br>
+            1. <b>Сбор информации:</b> Бот собирает только публичный Telegram ID и имя пользователя (username) для ведения учетной записи.<br><br>
+            2. <b>Цель сбора:</b> Данные используются исключительно для корректной работы личного кабинета подписки.<br><br>
+            3. <b>Безопасность платежей:</b> Мы не обрабатываем и не сохраняем реквизиты ваших платежных карт. Все транзакции выполняются на стороне платежных шлюзов.<br><br>
+            4. <b>Передача третьим лицам:</b> Передача ваших личных данных сторонним лицам полностью исключена.
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand(); // Расширяем Mini App на весь экран
+
+        // Логика переключения экранов
+        function showPage(pageId) {
+            // Скрываем все страницы
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            // Показываем выбранную
+            document.getElementById('page-' + pageId).classList.add('active');
+
+            if (pageId === 'home') {
+                tg.BackButton.hide(); // На главной скрываем кнопку «Назад»
+            } else {
+                tg.BackButton.show(); // На внутренних страницах показываем нативную кнопку «Назад»
+            }
+        }
+
+        // Обработка клика на нативную кнопку «Назад» в Telegram
+        tg.BackButton.onClick(() => {
+            showPage('home');
+        });
+
+        // Считываем параметры из ссылки, чтобы открывать документы напрямую
+        const urlParams = new URLSearchParams(window.location.search);
+        const pageParam = urlParams.get('page');
+        if (pageParam === 'oferta') {
+            showPage('oferta');
+        } else if (pageParam === 'privacy') {
+            showPage('privacy');
+        }
+    </script>
+</body>
+</html>
