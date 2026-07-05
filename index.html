@@ -4,18 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вспышка VPN</title>
-    <!-- Подключаем Tailwind CSS для современного дизайна -->
+    <!-- Подключаем Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Цветовая палитра на основе системных цветов Telegram */
         :root {
-            --bg-color: var(--tg-theme-bg-color, #0b0b0e);
-            --text-color: var(--tg-theme-text-color, #ffffff);
-            --secondary-bg: var(--tg-theme-secondary-bg-color, #13131a);
-            --button-color: var(--tg-theme-button-color, #5f5dec);
+            --bg-color: var(--tg-theme-bg-color, #121318);
+            --text-color: var(--tg-theme-text-color, #f4f4f7);
+            --secondary-bg: var(--tg-theme-secondary-bg-color, #1a1b22);
+            --button-color: var(--tg-theme-button-color, #4f46e5);
             --button-text: var(--tg-theme-button-text-color, #ffffff);
-            --hint-color: var(--tg-theme-hint-color, #8e8e93);
+            --hint-color: var(--tg-theme-hint-color, #7e8494);
         }
         body {
             background-color: var(--bg-color);
@@ -24,27 +23,15 @@
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
-        .bg-glass {
-            background-color: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+        .bg-card {
+            background-color: var(--secondary-bg);
         }
-        .border-glass {
-            border-color: rgba(255, 255, 255, 0.07);
+        .btn-action {
+            background-color: var(--button-color);
+            color: var(--button-text);
         }
-        /* Анимация пульсации для светящегося щита */
-        @keyframes shield-pulse {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(95, 93, 236, 0.15), inset 0 0 15px rgba(95, 93, 236, 0.1);
-                transform: scale(1);
-            }
-            50% {
-                box-shadow: 0 0 40px rgba(95, 93, 236, 0.4), inset 0 0 25px rgba(95, 93, 236, 0.25);
-                transform: scale(1.02);
-            }
-        }
-        .animate-shield {
-            animation: shield-pulse 3s infinite ease-in-out;
+        .border-thin {
+            border-color: rgba(255, 255, 255, 0.05);
         }
     </style>
 </head>
@@ -53,49 +40,44 @@
     <!-- ========================================== -->
     <!-- ВКЛАДКА 1: ГЛАВНЫЙ ЭКРАН                   -->
     <!-- ========================================== -->
-    <div id="tab-home" class="tab-content p-4 space-y-6">
-        
-        <!-- Верхний статус подключения -->
-        <div class="flex items-center justify-between px-2 pt-2">
-            <span class="text-xs uppercase tracking-widest font-bold text-[var(--hint-color)]">Состояние</span>
-            <div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
-                <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span>
-                <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Защищено</span>
+    <div id="tab-home" class="tab-content p-5 space-y-8">
+        <div class="flex items-center justify-between px-1 pt-1">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-[var(--hint-color)]">Состояние сети</span>
+            <div class="flex items-center gap-1.5 opacity-90">
+                <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
+                <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Подключено</span>
             </div>
         </div>
 
-        <!-- Центральный интерактивный щит -->
-        <div class="flex flex-col items-center justify-center py-6 space-y-6">
-            <div class="w-36 h-36 bg-glass border-glass border rounded-full flex items-center justify-center animate-shield shadow-2xl transition-all duration-300">
-                <svg class="w-16 h-16 text-[var(--button-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+        <div class="flex flex-col items-center justify-center py-6 space-y-5">
+            <div class="w-32 h-36 bg-card border border-thin rounded-[28px] flex items-center justify-center shadow-sm">
+                <svg class="w-14 h-14 text-indigo-400/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.133-4.016z"></path>
                 </svg>
             </div>
             <div class="text-center space-y-1">
-                <h1 class="text-2xl font-black tracking-tight">Вспышка VPN</h1>
-                <p class="text-xs text-[var(--hint-color)]">Ваш IP-адрес скрыт • Трафик зашифрован</p>
+                <h1 class="text-2xl font-bold tracking-tight">Вспышка VPN</h1>
+                <p class="text-xs text-[var(--hint-color)] font-medium">Ваш персональный безопасный туннель</p>
             </div>
         </div>
 
-        <!-- Статистика протокола -->
         <div class="grid grid-cols-2 gap-3">
-            <div class="bg-glass border-glass border p-4 rounded-2xl space-y-1">
-                <span class="text-[10px] uppercase font-bold text-[var(--hint-color)]">Протокол</span>
-                <p class="font-bold text-sm tracking-wide text-indigo-300">VLESS XTLS-Reality</p>
+            <div class="bg-card border border-thin p-4 rounded-2xl">
+                <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Протокол</span>
+                <p class="font-bold text-xs text-indigo-300/80 mt-1">VLESS Reality</p>
             </div>
-            <div class="bg-glass border-glass border p-4 rounded-2xl space-y-1">
-                <span class="text-[10px] uppercase font-bold text-[var(--hint-color)]">Сервер</span>
-                <p class="font-bold text-sm tracking-wide text-purple-300">Сверхскоростной</p>
+            <div class="bg-card border border-thin p-4 rounded-2xl">
+                <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Локация</span>
+                <p class="font-bold text-xs text-indigo-300/80 mt-1">По умолчанию</p>
             </div>
         </div>
 
-        <!-- Кнопки действий -->
-        <div class="space-y-3">
-            <button onclick="switchTab('tariffs')" class="w-full bg-[var(--button-color)] text-[var(--button-text)] py-4 rounded-2xl font-bold text-center block shadow-lg shadow-indigo-500/10 active:scale-[0.98] transition-transform duration-100">
-                🚀 Купить / Продлить подписку
+        <div class="space-y-2.5 pt-2">
+            <button onclick="switchTab('tariffs')" class="btn-action w-full py-3.5 rounded-xl font-bold text-center block active:scale-[0.99] transition-transform duration-100">
+                Купить подписку
             </button>
-            <button onclick="triggerAction('trial')" class="w-full bg-glass border-glass border py-4 rounded-2xl font-bold text-center active:scale-[0.98] transition-transform duration-100">
-                Активировать тест на 3 дня
+            <button onclick="triggerAction('trial')" class="w-full bg-card border border-thin py-3.5 rounded-xl font-bold text-center active:scale-[0.99] transition-transform duration-100 text-xs">
+                Попробовать бесплатно 3 дня
             </button>
         </div>
     </div>
@@ -103,58 +85,50 @@
     <!-- ========================================== -->
     <!-- ВКЛАДКА 2: ТАРИФЫ                          -->
     <!-- ========================================== -->
-    <div id="tab-tariffs" class="tab-content p-4 space-y-6 hidden">
-        <div class="pt-2">
-            <span class="text-xs uppercase tracking-widest font-bold text-[var(--hint-color)]">Выбор подписки</span>
-            <h2 class="text-xl font-black mt-1">Наши тарифы</h2>
+    <div id="tab-tariffs" class="tab-content p-5 space-y-6 hidden">
+        <div class="pt-1">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-[var(--hint-color)]">Тарифные планы</span>
+            <h2 class="text-xl font-bold mt-0.5">Выберите период</h2>
         </div>
         
-        <div class="space-y-4">
-            <!-- 1 месяц Stars -->
-            <div class="bg-glass border-glass border p-5 rounded-3xl flex justify-between items-center relative overflow-hidden">
-                <div class="space-y-1 z-10">
-                    <span class="bg-indigo-500/10 text-indigo-400 text-[9px] uppercase font-extrabold px-2.5 py-1 rounded-full border border-indigo-500/20">Популярный</span>
-                    <h3 class="font-bold text-lg pt-1">1 месяц VPN</h3>
-                    <p class="text-xs text-[var(--hint-color)]">Оплата через Telegram Stars</p>
+        <div class="space-y-3">
+            <div class="bg-card border border-thin p-4 rounded-2xl flex justify-between items-center">
+                <div class="space-y-0.5">
+                    <h3 class="font-bold text-sm">1 месяц доступа</h3>
+                    <p class="text-[10px] text-[var(--hint-color)]">Оплата через Telegram Stars</p>
                 </div>
-                <button onclick="triggerAction('stars_1')" class="bg-white text-black px-5 py-3 rounded-2xl font-bold text-sm shadow-md active:scale-95 transition-transform duration-700 z-10">
+                <button onclick="triggerAction('stars_1')" class="bg-white text-black px-4 py-2 rounded-xl font-bold text-xs active:scale-95 transition-transform duration-100">
                     100 ⭐
                 </button>
             </div>
 
-            <!-- 3 месяца Stars -->
-            <div class="bg-glass border-glass border p-5 rounded-3xl flex justify-between items-center relative overflow-hidden">
-                <div class="space-y-1 z-10">
-                    <span class="bg-purple-500/10 text-purple-400 text-[9px] uppercase font-extrabold px-2.5 py-1 rounded-full border border-purple-500/20">Лучшая цена</span>
-                    <h3 class="font-bold text-lg pt-1">3 месяца VPN</h3>
-                    <p class="text-xs text-[var(--hint-color)]">Оплата через Telegram Stars</p>
+            <div class="bg-card border border-thin p-4 rounded-2xl flex justify-between items-center">
+                <div class="space-y-0.5">
+                    <h3 class="font-bold text-sm">3 месяца доступа</h3>
+                    <p class="text-[10px] text-[var(--hint-color)]">Оплата через Telegram Stars</p>
                 </div>
-                <button onclick="triggerAction('stars_3')" class="bg-white text-black px-5 py-3 rounded-2xl font-bold text-sm shadow-md active:scale-95 transition-transform duration-100 z-10">
+                <button onclick="triggerAction('stars_3')" class="bg-white text-black px-4 py-2 rounded-xl font-bold text-xs active:scale-95 transition-transform duration-100">
                     250 ⭐
                 </button>
             </div>
 
-            <!-- 1 месяц Crypto -->
-            <div class="bg-glass border-glass border p-5 rounded-3xl flex justify-between items-center relative overflow-hidden">
-                <div class="space-y-1 z-10">
-                    <span class="bg-emerald-500/10 text-emerald-400 text-[9px] uppercase font-extrabold px-2.5 py-1 rounded-full border border-emerald-500/20">Анонимно</span>
-                    <h3 class="font-bold text-lg pt-1">1 месяц Crypto</h3>
-                    <p class="text-xs text-[var(--hint-color)]">Оплата через CryptoBot (USDT)</p>
+            <div class="bg-card border border-thin p-4 rounded-2xl flex justify-between items-center">
+                <div class="space-y-0.5">
+                    <h3 class="font-bold text-sm">1 месяц (USDT)</h3>
+                    <p class="text-[10px] text-[var(--hint-color)]">Оплата через CryptoBot</p>
                 </div>
-                <button onclick="triggerAction('crypto_1')" class="bg-emerald-500 text-white px-5 py-3 rounded-2xl font-bold text-sm active:scale-95 transition-transform duration-100 z-10">
-                    1.95 $
+                <button onclick="triggerAction('crypto_1')" class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-4 py-2 rounded-xl font-bold text-xs active:scale-95 transition-transform duration-100">
+                    1.95 USDT
                 </button>
             </div>
 
-            <!-- 3 месяца Crypto -->
-            <div class="bg-glass border-glass border p-5 rounded-3xl flex justify-between items-center relative overflow-hidden">
-                <div class="space-y-1 z-10">
-                    <span class="bg-emerald-500/10 text-emerald-400 text-[9px] uppercase font-extrabold px-2.5 py-1 rounded-full border border-emerald-500/20">Макс. выгода</span>
-                    <h3 class="font-bold text-lg pt-1">3 месяца Crypto</h3>
-                    <p class="text-xs text-[var(--hint-color)]">Оплата через CryptoBot (USDT)</p>
+            <div class="bg-card border border-thin p-4 rounded-2xl flex justify-between items-center">
+                <div class="space-y-0.5">
+                    <h3 class="font-bold text-sm">3 месяца (USDT)</h3>
+                    <p class="text-[10px] text-[var(--hint-color)]">Оплата через CryptoBot</p>
                 </div>
-                <button onclick="triggerAction('crypto_3')" class="bg-emerald-500 text-white px-5 py-3 rounded-2xl font-bold text-sm active:scale-95 transition-transform duration-100 z-10">
-                    3.50 $
+                <button onclick="triggerAction('crypto_3')" class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-4 py-2 rounded-xl font-bold text-xs active:scale-95 transition-transform duration-100">
+                    3.50 USDT
                 </button>
             </div>
         </div>
@@ -163,56 +137,50 @@
     <!-- ========================================== -->
     <!-- ВКЛАДКА 3: ПРОФИЛЬ                         -->
     <!-- ========================================== -->
-    <div id="tab-profile" class="tab-content p-4 space-y-5 hidden">
-        <div class="pt-2">
-            <span class="text-xs uppercase tracking-widest font-bold text-[var(--hint-color)]">Аккаунт</span>
-            <h2 class="text-xl font-black mt-1">Профиль пользователя</h2>
+    <div id="tab-profile" class="tab-content p-5 space-y-6 hidden">
+        <div class="pt-1">
+            <span class="text-[10px] uppercase tracking-widest font-bold text-[var(--hint-color)]">Аккаунт</span>
+            <h2 class="text-xl font-bold mt-0.5">Личный профиль</h2>
         </div>
         
-        <!-- Профиль пользователя -->
-        <div class="bg-glass border-glass border p-5 rounded-3xl space-y-4">
-            <div class="flex justify-between border-b border-white/5 pb-3 text-sm">
-                <span class="text-[var(--hint-color)]">Пользователь</span>
-                <span id="user-name" class="font-bold">-</span>
+        <div class="bg-card border border-thin p-4 rounded-2xl space-y-3.5 text-xs">
+            <div class="flex justify-between border-b border-white/5 pb-2.5">
+                <span class="text-[var(--hint-color)]">Юзернейм</span>
+                <span id="user-name" class="font-semibold">-</span>
             </div>
-            <div class="flex justify-between items-center text-sm">
+            <div class="flex justify-between items-center">
                 <span class="text-[var(--hint-color)]">ID Аккаунта</span>
-                <div class="flex items-center gap-2">
-                    <span id="user-id" class="font-mono font-bold">-</span>
-                </div>
+                <span id="user-id" class="font-mono font-bold">-</span>
             </div>
         </div>
 
-        <!-- Активация промокода прямо в приложении -->
-        <div class="bg-glass border-glass border p-5 rounded-3xl space-y-3">
-            <span class="text-[10px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Промокод</span>
+        <div class="bg-card border border-thin p-4 rounded-2xl space-y-2">
+            <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider px-0.5 block">Активация промокода</span>
             <div class="flex gap-2">
-                <input id="promo-input" type="text" placeholder="Введите промокод..." class="flex-1 bg-white/5 border border-white/10 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:border-[var(--button-color)] font-bold uppercase placeholder:font-normal placeholder:normal-case transition-all">
-                <button onclick="activatePromo()" class="bg-[var(--button-color)] text-[var(--button-text)] px-5 rounded-2xl text-sm font-bold active:scale-95 transition-transform duration-100">
+                <input id="promo-input" type="text" placeholder="Введите код..." class="flex-1 bg-white/5 border border-white/5 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-[var(--button-color)] font-bold uppercase placeholder:font-normal placeholder:normal-case transition-all">
+                <button onclick="activatePromo()" class="bg-white text-black px-4 rounded-xl text-xs font-bold active:scale-95 transition-transform duration-100">
                     Ввод
                 </button>
             </div>
         </div>
 
-        <!-- Реферальный баннер -->
-        <div class="bg-glass border-glass border p-5 rounded-3xl flex justify-between items-center">
-            <div class="space-y-1">
-                <h3 class="font-bold text-sm">👥 Реферальная программа</h3>
-                <p class="text-xs text-[var(--hint-color)]">Получайте +7 дней за каждого друга</p>
+        <div class="bg-card border border-thin p-4 rounded-2xl flex justify-between items-center">
+            <div class="space-y-0.5">
+                <h3 class="font-bold text-xs">👥 Партнерская программа</h3>
+                <p class="text-[10px] text-[var(--hint-color)]">Приглашайте друзей за бонусы</p>
             </div>
-            <button onclick="triggerAction('referrals')" class="bg-white/5 border border-white/10 text-white px-4 py-2.5 rounded-xl text-xs font-bold active:scale-95 transition-transform duration-100">
-                Узнать
+            <button onclick="triggerAction('referrals')" class="bg-white/5 border border-white/10 text-white px-3 py-2 rounded-xl text-[10px] font-bold active:scale-95 transition-transform duration-100">
+                Открыть
             </button>
         </div>
 
-        <!-- Раздел документов -->
-        <div class="space-y-2">
-            <span class="text-[10px] uppercase font-bold text-[var(--hint-color)] tracking-wider px-1 block">Документы</span>
-            <button onclick="showDoc('oferta')" class="w-full bg-glass border-glass border py-3 px-4 rounded-2xl text-left text-sm font-semibold opacity-80 flex items-center justify-between">
+        <div class="space-y-1.5">
+            <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider px-1 block">Документы</span>
+            <button onclick="showDoc('oferta')" class="w-full bg-card border border-thin py-3 px-4 rounded-xl text-left text-xs opacity-90 flex justify-between">
                 <span>📄 Публичная оферта</span>
                 <span class="opacity-30">➔</span>
             </button>
-            <button onclick="showDoc('privacy')" class="w-full bg-glass border-glass border py-3 px-4 rounded-2xl text-left text-sm font-semibold opacity-80 flex items-center justify-between">
+            <button onclick="showDoc('privacy')" class="w-full bg-card border border-thin py-3 px-4 rounded-xl text-left text-xs opacity-90 flex justify-between">
                 <span>🔒 Политика конфиденциальности</span>
                 <span class="opacity-30">➔</span>
             </button>
@@ -220,16 +188,63 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- МОДАЛЬНОЕ ОКНО СНИЗУ (BOTTOM SHEET)         -->
+    <!-- НОВЫЙ ЭКРАН: ИМПОРТ VPN-КЛЮЧА              -->
     <!-- ========================================== -->
-    <div id="doc-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end hidden">
-        <div class="w-full max-h-[80vh] bg-neutral-900 rounded-t-[32px] p-6 overflow-y-auto space-y-4 border-t border-white/10">
-            <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                <h2 id="modal-title" class="text-lg font-bold">Документ</h2>
-                <button onclick="closeDoc()" class="text-xs font-bold text-[var(--button-color)] bg-white/5 px-4 py-2 rounded-xl">Закрыть</button>
+    <div id="tab-import" class="tab-content p-5 space-y-6 hidden">
+        <div class="text-center pt-8 space-y-4">
+            <div class="w-20 h-20 bg-indigo-500/10 border border-indigo-500/20 rounded-3xl flex items-center justify-center mx-auto shadow-md">
+                <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"></path>
+                </svg>
             </div>
-            <div id="modal-content" class="text-sm leading-relaxed text-[var(--hint-color)] whitespace-pre-line pb-8">
-                <!-- Контент документа -->
+            <h1 class="text-xl font-bold">Импорт ключа доступа</h1>
+            <p class="text-xs text-[var(--hint-color)]">Пытаемся автоматически запустить приложение Happ для установки подписки...</p>
+        </div>
+
+        <!-- Кнопка принудительного открытия в приложении -->
+        <a id="manual-deeplink-btn" href="#" class="btn-action w-full py-4 rounded-2xl font-bold text-center block active:scale-95 transition-transform duration-100">
+            ⚡ Открыть в Happ
+        </a>
+
+        <!-- Блок «Если приложение не установлено» -->
+        <div class="bg-card border border-thin p-5 rounded-3xl space-y-4">
+            <div class="text-center space-y-1">
+                <h3 class="font-bold text-sm">Приложение Happ не открылось?</h3>
+                <p class="text-xs text-[var(--hint-color)]">Возможно, на вашем устройстве не установлено приложение Happ. Пожалуйста, скачайте его:</p>
+            </div>
+            
+            <!-- Кнопки загрузки -->
+            <div class="grid grid-cols-2 gap-2">
+                <a href="https://play.google.com/store/apps/details?id=com.happproxy" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🤖 Android</a>
+                <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🍏 iPhone</a>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <a href="https://happ.info" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">💻 Windows</a>
+                <a href="https://happ.info" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🖥️ macOS</a>
+            </div>
+            
+            <!-- Альтернативное копирование вручную -->
+            <div class="space-y-2 pt-3 border-t border-white/5">
+                <p class="text-[11px] text-center text-[var(--hint-color)]">Или скопируйте ключ и вставьте его в приложение вручную:</p>
+                <div class="flex gap-2">
+                    <input id="import-key-input" type="text" readonly class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-[var(--hint-color)] focus:outline-none">
+                    <button onclick="copyImportKey()" class="bg-white/10 border border-white/10 text-white px-3 rounded-xl text-xs font-bold active:scale-95 transition-transform duration-100">Копировать</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ДОКУМЕНТОВ              -->
+    <!-- ========================================== -->
+    <div id="doc-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end hidden">
+        <div class="w-full max-h-[75vh] bg-neutral-900 rounded-t-3xl p-5 overflow-y-auto space-y-4 border-t border-white/10">
+            <div class="flex justify-between items-center border-b border-white/5 pb-2.5">
+                <h2 id="modal-title" class="text-sm font-bold">Документ</h2>
+                <button onclick="closeDoc()" class="text-[10px] font-bold text-indigo-400 bg-white/5 px-3 py-1.5 rounded-lg">Закрыть</button>
+            </div>
+            <div id="modal-content" class="text-xs leading-relaxed text-[var(--hint-color)] whitespace-pre-line pb-8">
+                <!-- Текст -->
             </div>
         </div>
     </div>
@@ -237,16 +252,14 @@
     <!-- ========================================== -->
     <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ (NAV BAR)          -->
     <!-- ========================================== -->
-    <div class="fixed bottom-0 left-0 right-0 h-24 border-t border-glass flex justify-around items-center px-6 z-40 bg-glass backdrop-blur-2xl">
-        <!-- Главная -->
-        <button onclick="switchTab('home')" id="nav-home" class="nav-btn flex flex-col items-center justify-center space-y-1.5 text-[10px] font-bold tracking-wider uppercase transition-all duration-200">
-            <svg class="w-6 h-6 text-[var(--button-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div id="navbar" class="fixed bottom-0 left-0 right-0 h-20 border-t border-thin flex justify-around items-center px-6 z-40 bg-card">
+        <button onclick="switchTab('home')" id="nav-home" class="nav-btn flex flex-col items-center justify-center space-y-1 text-[9px] font-bold tracking-wider uppercase opacity-100 transition-all">
+            <svg class="w-5 h-5 text-[var(--button-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
             </svg>
             <span class="text-[var(--button-color)]">Главная</span>
         </button>
 
-        <!-- Тарифы -->
         <button onclick="switchTab('tariffs')" id="nav-tariffs" class="nav-btn flex flex-col items-center justify-center space-y-1.5 text-[10px] font-bold tracking-wider uppercase opacity-40 transition-all duration-200">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -254,10 +267,9 @@
             <span>Тарифы</span>
         </button>
 
-        <!-- Профиль -->
-        <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn flex flex-col items-center justify-center space-y-1.5 text-[10px] font-bold tracking-wider uppercase opacity-40 transition-all duration-200">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn flex flex-col items-center justify-center space-y-1 text-[9px] font-bold tracking-wider uppercase opacity-45 transition-all">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
             </svg>
             <span>Профиль</span>
         </button>
@@ -266,8 +278,8 @@
     <!-- Тексты документов -->
     <script>
         const DOCS = {
-            oferta: `📄 ПУБЛИЧНАЯ ОФЕРТА\n\n1. Предмет соглашения:\nСервис Вспышка VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше полное согласие с правилами работы сервиса.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату или обмену не подлежат.`,
-            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Собираемые данные:\nМы сохраняем только ваш уникальный Telegram ID и имя пользователя.\n\n2. Цель хранения:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность реквизитов:\nМы не имеем доступа к данным ваших банковских карт. Все транзакции выполняются платежным провайдером.`
+            oferta: `📄 ПУБЛИЧНАЯ ОФЕРТА\n\n1. Предмет соглашения:\nСервис Вспышка VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату не подлежат.`,
+            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы не передаем ваши данные третьим лицам.`
         };
     </script>
 
@@ -276,51 +288,45 @@
         tg.ready();
         tg.expand();
 
-        // Считываем имя бота из параметров ссылки
+        // Получение имени бота из URL параметров
         const urlParams = new URLSearchParams(window.location.search);
         const botUsername = urlParams.get('bot') || "Vspyshka_VPN_bot";
 
-        // Отображение данных
+        // Профиль
         document.getElementById('user-name').innerText = tg.initDataUnsafe?.user?.username ? '@' + tg.initDataUnsafe.user.username : 'NoUsername';
         document.getElementById('user-id').innerText = tg.initDataUnsafe?.user?.id || '-';
 
-        // Переключение вкладок
+        // Навигация между вкладками
         function switchTab(tabId) {
             tg.HapticFeedback.impactOccurred('light');
-            
-            // Скрываем все вкладки
             document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-            // Показываем текущую
             document.getElementById('tab-' + tabId).classList.remove('hidden');
 
-            // Сбрасываем цвета кнопок в меню на неактивные
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.add('opacity-40');
+                btn.classList.add('opacity-45');
                 btn.querySelector('svg').style.color = 'var(--hint-color)';
                 btn.querySelector('span').style.color = 'var(--hint-color)';
             });
 
-            // Активируем нужную кнопку меню
             const activeBtn = document.getElementById('nav-' + tabId);
-            activeBtn.classList.remove('opacity-40');
+            activeBtn.classList.remove('opacity-45');
             activeBtn.querySelector('svg').style.color = 'var(--button-color)';
             activeBtn.querySelector('span').style.color = 'var(--button-color)';
         }
 
-        // Запуск действий в чате бота
+        // Действия в чате
         function triggerAction(actionName) {
             tg.HapticFeedback.impactOccurred('medium');
             tg.openTelegramLink(`https://t.me/${botUsername}?start=${actionName}`);
         }
 
-        // Активация промокода прямо в приложении
+        // Активация промокода
         function activatePromo() {
             const codeInput = document.getElementById('promo-input');
             const code = codeInput.value.trim().toUpperCase();
             
             if (code) {
                 tg.HapticFeedback.notificationOccurred('success');
-                // Запускаем бота с параметром промокода
                 triggerAction('promo_' + code);
                 codeInput.value = '';
             } else {
@@ -329,7 +335,7 @@
             }
         }
 
-        // Модальное окно документов
+        // Модальное окно
         function showDoc(docId) {
             tg.HapticFeedback.impactOccurred('light');
             document.getElementById('modal-title').innerText = docId === 'oferta' ? 'Публичная оферта' : 'Политика конфиденциальности';
@@ -341,10 +347,47 @@
             document.getElementById('doc-modal').classList.add('hidden');
         }
 
-        // Прямое открытие документов из ссылки (если передан GET-параметр)
-        const pageParam = urlParams.get('page');
-        if (pageParam === 'oferta' || pageParam === 'privacy') {
-            showDoc(pageParam);
+        // Логика копирования ключа на экране импорта
+        function copyImportKey() {
+            tg.HapticFeedback.notificationOccurred('success');
+            const keyField = document.getElementById('import-key-input');
+            keyField.select();
+            keyField.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(keyField.value);
+            tg.showAlert('Ключ успешно скопирован в буфер обмена!');
+        }
+
+        // Логика проверки прямого перехода к импорту (если передан параметр ?import=...)
+        const importParam = urlParams.get('import');
+        if (importParam) {
+            try {
+                // Безопасное декодирование UTF-8 Base64
+                const rawKey = decodeURIComponent(escape(atob(importParam)));
+                
+                // Скрываем навигационную панель
+                document.getElementById('navbar').classList.add('hidden');
+                
+                // Переключаем на экран импорта
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+                document.getElementById('tab-import').classList.remove('hidden');
+                
+                // Заполняем ссылки и поля на экране импорта
+                document.getElementById('manual-deeplink-btn').href = rawKey;
+                document.getElementById('import-key-input').value = rawKey;
+                
+                // Пытаемся автоматически запустить глубокую ссылку vless://
+                setTimeout(() => {
+                    window.location.href = rawKey;
+                }, 100);
+            } catch (e) {
+                console.error("Ошибка декодирования ключа:", e);
+            }
+        } else {
+            // Если параметра импорта нет, проверяем прямые переходы на доки
+            const pageParam = urlParams.get('page');
+            if (pageParam === 'oferta' || pageParam === 'privacy') {
+                showDoc(pageParam);
+            }
         }
     </script>
 </body>
