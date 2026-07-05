@@ -4,79 +4,130 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Вспышка VPN</title>
-    <!-- Подключаем Tailwind CSS -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SDK Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-color: var(--tg-theme-bg-color, #121318);
-            --text-color: var(--tg-theme-text-color, #f4f4f7);
-            --secondary-bg: var(--tg-theme-secondary-bg-color, #1a1b22);
-            --button-color: var(--tg-theme-button-color, #4f46e5);
+            --bg-color: var(--tg-theme-bg-color, #0a0a0f);
+            --text-color: var(--tg-theme-text-color, #ffffff);
+            --secondary-bg: var(--tg-theme-secondary-bg-color, #12131e);
+            --button-color: var(--tg-theme-button-color, #6366f1);
             --button-text: var(--tg-theme-button-text-color, #ffffff);
-            --hint-color: var(--tg-theme-hint-color, #7e8494);
+            --hint-color: var(--tg-theme-hint-color, #9ca3af);
         }
+        
         body {
-            background-color: var(--bg-color);
+            background: radial-gradient(circle at 50% -20%, rgba(99, 102, 241, 0.18) 0%, transparent 60%),
+                        radial-gradient(circle at 0% 100%, rgba(244, 63, 94, 0.08) 0%, transparent 40%),
+                        var(--bg-color);
             color: var(--text-color);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
-        .bg-card {
-            background-color: var(--secondary-bg);
+
+        .bg-glass {
+            background-color: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
-        .btn-action {
-            background-color: var(--button-color);
-            color: var(--button-text);
+
+        .border-glass {
+            border-color: rgba(255, 255, 255, 0.08);
         }
-        .border-thin {
-            border-color: rgba(255, 255, 255, 0.05);
+
+        /* Анимация плавного всплытия текста и карточек */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 100ms; }
+        .delay-2 { animation-delay: 200ms; }
+        .delay-3 { animation-delay: 300ms; }
+        .delay-4 { animation-delay: 400ms; }
+
+        /* Пульсирующий неоновый щит */
+        @keyframes shield-glow {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(99, 102, 241, 0.2), inset 0 0 10px rgba(99, 102, 241, 0.1);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 35px rgba(99, 102, 241, 0.55), inset 0 0 20px rgba(99, 102, 241, 0.25);
+                transform: scale(1.02);
+            }
+        }
+        .animate-shield {
+            animation: shield-glow 4s infinite ease-in-out;
         }
     </style>
 </head>
-<body class="pb-28 overflow-x-hidden">
+<body class="pb-28 overflow-x-hidden min-h-screen">
 
     <!-- ========================================== -->
-    <!-- ВКЛАДКА 1: ГЛАВНЫЙ ЭКРАН                   -->
+    <!-- ВКЛАДКА 1: ГЛАВНАЯ                         -->
     <!-- ========================================== -->
-    <div id="tab-home" class="tab-content p-5 space-y-8">
-        <div class="flex items-center justify-between px-1 pt-1">
-            <span class="text-[10px] uppercase tracking-widest font-bold text-[var(--hint-color)]">Состояние сети</span>
-            <div class="flex items-center gap-1.5 opacity-90">
-                <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>
-                <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Подключено</span>
+    <div id="tab-home" class="tab-content p-4 space-y-6">
+        
+        <!-- Шапка с пульсирующей точкой -->
+        <div class="flex items-center justify-between px-2 pt-2 fade-in-up">
+            <span class="text-[11px] uppercase tracking-widest font-black text-[var(--hint-color)]">Состояние</span>
+            <div class="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full shadow-[0_0_15px_rgba(52,211,153,0.15)]">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span class="text-[10px] font-black text-emerald-400 uppercase tracking-wider">Подключено</span>
             </div>
         </div>
 
-        <div class="flex flex-col items-center justify-center py-6 space-y-5">
-            <div class="w-32 h-36 bg-card border border-thin rounded-[28px] flex items-center justify-center shadow-sm">
-                <svg class="w-14 h-14 text-indigo-400/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.133-4.016z"></path>
+        <!-- Центральный неоновый щит -->
+        <div class="flex flex-col items-center justify-center py-6 space-y-6 fade-in-up delay-1">
+            <div class="w-36 h-36 bg-gradient-to-tr from-indigo-600/20 to-purple-600/20 border-glass border rounded-full flex items-center justify-center animate-shield shadow-2xl relative">
+                <!-- Внутренний блик -->
+                <div class="absolute inset-2 bg-gradient-to-br from-white/5 to-transparent rounded-full"></div>
+                <svg class="w-16 h-16 text-indigo-400 drop-shadow-[0_0_10px_rgba(129,140,248,0.3)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                 </svg>
             </div>
             <div class="text-center space-y-1">
-                <h1 class="text-2xl font-bold tracking-tight">Вспышка VPN</h1>
-                <p class="text-xs text-[var(--hint-color)] font-medium">Ваш персональный безопасный туннель</p>
+                <h1 class="text-3xl font-black tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">Вспышка VPN</h1>
+                <p class="text-xs text-[var(--hint-color)]">Защищенный туннель • Полная анонимность</p>
             </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-            <div class="bg-card border border-thin p-4 rounded-2xl">
+        <!-- Карточки тех. информации -->
+        <div class="grid grid-cols-2 gap-3 fade-in-up delay-2">
+            <div class="bg-glass border-glass border p-4 rounded-2xl space-y-1 shadow-inner">
                 <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Протокол</span>
-                <p class="font-bold text-xs text-indigo-300/80 mt-1">VLESS Reality</p>
+                <p class="font-extrabold text-xs text-indigo-300">VLESS XTLS-Reality</p>
             </div>
-            <div class="bg-card border border-thin p-4 rounded-2xl">
-                <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Локация</span>
-                <p class="font-bold text-xs text-indigo-300/80 mt-1">По умолчанию</p>
+            <div class="bg-glass border-glass border p-4 rounded-2xl space-y-1 shadow-inner">
+                <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Узел</span>
+                <p class="font-extrabold text-xs text-fuchsia-300">Сверхскоростной</p>
             </div>
         </div>
 
-        <div class="space-y-2.5 pt-2">
-            <button onclick="switchTab('tariffs')" class="btn-action w-full py-3.5 rounded-xl font-bold text-center block active:scale-[0.99] transition-transform duration-100">
-                Купить подписку
+        <!-- Кнопки управления подпиской -->
+        <div class="space-y-3 fade-in-up delay-3">
+            <button onclick="switchTab('tariffs')" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-4 rounded-2xl font-black text-center block shadow-[0_0_20px_rgba(99,102,241,0.25)] active:scale-[0.98] transition-all">
+                💳 Купить подписку
             </button>
-            <button onclick="triggerAction('trial')" class="w-full bg-card border border-thin py-3.5 rounded-xl font-bold text-center active:scale-[0.99] transition-transform duration-100 text-xs">
+            <button onclick="triggerAction('trial')" class="w-full bg-glass border-glass border py-4 rounded-2xl font-black text-center active:scale-[0.98] transition-transform duration-100 text-xs">
                 Попробовать бесплатно 3 дня
             </button>
         </div>
@@ -85,50 +136,54 @@
     <!-- ========================================== -->
     <!-- ВКЛАДКА 2: ТАРИФЫ                          -->
     <!-- ========================================== -->
-    <div id="tab-tariffs" class="tab-content p-5 space-y-6 hidden">
-        <div class="pt-1">
-            <span class="text-[10px] uppercase tracking-widest font-bold text-[var(--hint-color)]">Тарифные планы</span>
-            <h2 class="text-xl font-bold mt-0.5">Выберите период</h2>
+    <div id="tab-tariffs" class="tab-content p-4 space-y-6 hidden">
+        <div class="pt-2">
+            <span class="text-xs uppercase tracking-widest font-black text-indigo-400">Тарифные планы</span>
+            <h2 class="text-2xl font-black mt-0.5">Доступные подписки</h2>
         </div>
         
-        <div class="space-y-3">
-            <div class="bg-card border border-thin p-4 rounded-2xl flex justify-between items-center">
-                <div class="space-y-0.5">
-                    <h3 class="font-bold text-sm">1 месяц доступа</h3>
-                    <p class="text-[10px] text-[var(--hint-color)]">Оплата через Telegram Stars</p>
+        <div class="space-y-4">
+            <!-- БАЗОВЫЙ ТАРИФ -->
+            <div class="bg-glass border-glass border p-5 rounded-3xl relative overflow-hidden flex flex-col justify-between space-y-4">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="bg-slate-500/10 text-slate-300 text-[9px] uppercase font-extrabold px-3 py-1 rounded-full border border-slate-500/20">Базовый тариф</span>
+                        <span class="text-xs text-slate-300 font-bold">1 месяц</span>
+                    </div>
+                    <div class="flex items-baseline gap-1 pt-2">
+                        <span class="text-3xl font-black">99 ₽</span>
+                        <span class="text-xs text-[var(--hint-color)]">/ месяц</span>
+                    </div>
+                    <div class="space-y-1.5 pt-2 border-t border-white/5">
+                        <p class="text-xs text-[var(--hint-color)] flex items-center gap-2">▫️ Скорость подключения до 50 Мбит/с</p>
+                        <p class="text-xs text-[var(--hint-color)] flex items-center gap-2">▫️ Доступ к 1 активному устройству</p>
+                        <p class="text-xs text-[var(--hint-color)] flex items-center gap-2">▫️ Протокол безопасности VLESS</p>
+                    </div>
                 </div>
-                <button onclick="triggerAction('stars_1')" class="bg-white text-black px-4 py-2 rounded-xl font-bold text-xs active:scale-95 transition-transform duration-100">
-                    100 ⭐
+                <button onclick="openPaymentSelector('basic')" class="w-full bg-white text-black py-3 rounded-2xl font-black text-xs active:scale-[0.98] transition-all">
+                    Выбрать тариф
                 </button>
             </div>
 
-            <div class="bg-card border border-thin p-4 rounded-2xl flex justify-between items-center">
-                <div class="space-y-0.5">
-                    <h3 class="font-bold text-sm">3 месяца доступа</h3>
-                    <p class="text-[10px] text-[var(--hint-color)]">Оплата через Telegram Stars</p>
+            <!-- ПРЕМИУМ ТАРИФ (СВЕТЯЩИЙСЯ) -->
+            <div class="bg-gradient-to-b from-indigo-950/20 to-purple-950/20 border-indigo-500/30 border-2 p-5 rounded-3xl relative overflow-hidden flex flex-col justify-between space-y-4 shadow-[0_0_25px_rgba(99,102,241,0.15)]">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="bg-indigo-500/20 text-indigo-300 text-[9px] uppercase font-extrabold px-3 py-1 rounded-full border border-indigo-500/40">Премиум тариф</span>
+                        <span class="text-xs text-indigo-300 font-bold">3 месяца</span>
+                    </div>
+                    <div class="flex items-baseline gap-1 pt-2">
+                        <span class="text-3xl font-black text-indigo-200">249 ₽</span>
+                        <span class="text-xs text-[var(--hint-color)]">/ 3 месяца</span>
+                    </div>
+                    <div class="space-y-1.5 pt-2 border-t border-indigo-500/10">
+                        <p class="text-xs text-indigo-200/80 flex items-center gap-2">✦ Максимальная скорость без ограничений</p>
+                        <p class="text-xs text-indigo-200/80 flex items-center gap-2">✦ Подключение до 5 устройств одновременно</p>
+                        <p class="text-xs text-indigo-200/80 flex items-center gap-2">✦ VIP-протоколы XTLS + Reality</p>
+                    </div>
                 </div>
-                <button onclick="triggerAction('stars_3')" class="bg-white text-black px-4 py-2 rounded-xl font-bold text-xs active:scale-95 transition-transform duration-100">
-                    250 ⭐
-                </button>
-            </div>
-
-            <div class="bg-card border border-thin p-4 rounded-2xl flex justify-between items-center">
-                <div class="space-y-0.5">
-                    <h3 class="font-bold text-sm">1 месяц (USDT)</h3>
-                    <p class="text-[10px] text-[var(--hint-color)]">Оплата через CryptoBot</p>
-                </div>
-                <button onclick="triggerAction('crypto_1')" class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-4 py-2 rounded-xl font-bold text-xs active:scale-95 transition-transform duration-100">
-                    1.95 USDT
-                </button>
-            </div>
-
-            <div class="bg-card border border-thin p-4 rounded-2xl flex justify-between items-center">
-                <div class="space-y-0.5">
-                    <h3 class="font-bold text-sm">3 месяца (USDT)</h3>
-                    <p class="text-[10px] text-[var(--hint-color)]">Оплата через CryptoBot</p>
-                </div>
-                <button onclick="triggerAction('crypto_3')" class="bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 px-4 py-2 rounded-xl font-bold text-xs active:scale-95 transition-transform duration-100">
-                    3.50 USDT
+                <button onclick="openPaymentSelector('premium')" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3.5 rounded-2xl font-black text-xs active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+                    Активировать Премиум
                 </button>
             </div>
         </div>
@@ -137,53 +192,131 @@
     <!-- ========================================== -->
     <!-- ВКЛАДКА 3: ПРОФИЛЬ                         -->
     <!-- ========================================== -->
-    <div id="tab-profile" class="tab-content p-5 space-y-6 hidden">
-        <div class="pt-1">
-            <span class="text-[10px] uppercase tracking-widest font-bold text-[var(--hint-color)]">Аккаунт</span>
-            <h2 class="text-xl font-bold mt-0.5">Личный профиль</h2>
-        </div>
+    <div id="tab-profile" class="tab-content p-4 space-y-6 hidden">
         
-        <div class="bg-card border border-thin p-4 rounded-2xl space-y-3.5 text-xs">
-            <div class="flex justify-between border-b border-white/5 pb-2.5">
-                <span class="text-[var(--hint-color)]">Юзернейм</span>
-                <span id="user-name" class="font-semibold">-</span>
+        <!-- Шапка Профиля с Аватаркой и Ником -->
+        <div class="flex items-center gap-4 bg-glass border-glass border p-4 rounded-3xl relative">
+            <div onclick="editProfile()" class="relative w-16 h-16 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center text-xl font-bold cursor-pointer overflow-hidden border border-white/10 shadow-md">
+                <img id="user-avatar" class="w-full h-full object-cover hidden" src="" alt="">
+                <span id="user-avatar-placeholder">U</span>
+                <div class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                    <span class="text-[10px]">✏️</span>
+                </div>
             </div>
-            <div class="flex justify-between items-center">
-                <span class="text-[var(--hint-color)]">ID Аккаунта</span>
-                <span id="user-id" class="font-mono font-bold">-</span>
+            <div class="space-y-1">
+                <div class="flex items-center gap-2">
+                    <span id="display-nick" class="font-bold text-lg">NoUsername</span>
+                    <button onclick="editProfile()" class="text-xs opacity-40 hover:opacity-100">✏️</button>
+                </div>
+                <p id="display-telegram-username" class="text-xs text-[var(--hint-color)]">@telegram</p>
             </div>
         </div>
 
-        <div class="bg-card border border-thin p-4 rounded-2xl space-y-2">
-            <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider px-0.5 block">Активация промокода</span>
-            <div class="flex gap-2">
-                <input id="promo-input" type="text" placeholder="Введите код..." class="flex-1 bg-white/5 border border-white/5 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-[var(--button-color)] font-bold uppercase placeholder:font-normal placeholder:normal-case transition-all">
-                <button onclick="activatePromo()" class="bg-white text-black px-4 rounded-xl text-xs font-bold active:scale-95 transition-transform duration-100">
-                    Ввод
+        <!-- Метрики Пользователя (под ником) -->
+        <div class="grid grid-cols-3 gap-3 bg-glass border-glass border p-4 rounded-3xl text-center shadow-inner">
+            <div class="space-y-0.5">
+                <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Баланс</span>
+                <p class="font-extrabold text-sm text-indigo-300">0.0 ₽</p>
+            </div>
+            <div class="space-y-0.5 border-x border-white/5">
+                <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Осталось</span>
+                <p id="profile-days-left" class="font-extrabold text-sm text-purple-300">0 дней</p>
+            </div>
+            <div class="space-y-0.5">
+                <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Устройства</span>
+                <p class="font-extrabold text-sm text-fuchsia-300">1 / 5</p>
+            </div>
+        </div>
+
+        <!-- Сетка плиточных кнопок профиля -->
+        <div class="grid grid-cols-2 gap-3">
+            <button onclick="openModal('my_subs')" class="bg-glass border-glass border p-4 rounded-2xl text-left space-y-2 active:scale-95 transition-all">
+                <span class="text-lg">💳</span>
+                <h4 class="font-bold text-xs">Мои подписки</h4>
+            </button>
+            <button onclick="triggerAction('referrals')" class="bg-glass border-glass border p-4 rounded-2xl text-left space-y-2 active:scale-95 transition-all">
+                <span class="text-lg">👥</span>
+                <h4 class="font-bold text-xs">Рефералы</h4>
+            </button>
+            <button onclick="openModal('withdraws')" class="bg-glass border-glass border p-4 rounded-2xl text-left space-y-2 active:scale-95 transition-all">
+                <span class="text-lg">📥</span>
+                <h4 class="font-bold text-xs">История выводов</h4>
+            </button>
+            <button onclick="openModal('payments')" class="bg-glass border-glass border p-4 rounded-2xl text-left space-y-2 active:scale-95 transition-all">
+                <span class="text-lg">🧾</span>
+                <h4 class="font-bold text-xs">История платежей</h4>
+            </button>
+        </div>
+
+        <!-- Список остальных кнопок -->
+        <div class="space-y-2 pt-2 border-t border-white/5">
+            <button onclick="triggerAction('support')" class="w-full bg-glass border-glass border py-3 px-4 rounded-xl text-left text-xs font-bold flex items-center justify-between">
+                <span>💬 Помощь и поддержка</span>
+                <span class="opacity-40">➔</span>
+            </button>
+            <button onclick="showDoc('privacy')" class="w-full bg-glass border-glass border py-3 px-4 rounded-xl text-left text-xs font-bold flex items-center justify-between">
+                <span>🔒 Политика конфиденциальности</span>
+                <span class="opacity-40">➔</span>
+            </button>
+            <button onclick="showDoc('oferta')" class="w-full bg-glass border-glass border py-3 px-4 rounded-xl text-left text-xs font-bold flex items-center justify-between">
+                <span>📄 Пользовательское соглашение</span>
+                <span class="opacity-40">➔</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ РЕДАКТИРОВАНИЯ ПРОФИЛЯ  -->
+    <!-- ========================================== -->
+    <div id="edit-profile-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end hidden">
+        <div class="w-full bg-neutral-900 rounded-t-[32px] p-6 space-y-4 border-t border-white/10">
+            <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                <h2 class="text-md font-bold">Редактировать профиль</h2>
+                <button onclick="closeEditModal()" class="text-xs font-bold text-indigo-400">Отмена</button>
+            </div>
+            <div class="space-y-3">
+                <div class="space-y-1">
+                    <label class="text-[10px] uppercase font-bold text-[var(--hint-color)]">Никнейм</label>
+                    <input id="edit-nick-input" type="text" class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 font-bold">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] uppercase font-bold text-[var(--hint-color)]">Ссылка на фото (аватар)</label>
+                    <input id="edit-avatar-input" type="text" placeholder="https://..." class="w-full bg-white/5 border border-white/5 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-500 text-xs">
+                </div>
+                <button onclick="saveProfile()" class="w-full bg-indigo-600 text-white py-3.5 rounded-2xl font-bold text-sm active:scale-95 transition-transform duration-100 mt-2">
+                    Сохранить изменения
                 </button>
             </div>
         </div>
+    </div>
 
-        <div class="bg-card border border-thin p-4 rounded-2xl flex justify-between items-center">
-            <div class="space-y-0.5">
-                <h3 class="font-bold text-xs">👥 Партнерская программа</h3>
-                <p class="text-[10px] text-[var(--hint-color)]">Приглашайте друзей за бонусы</p>
+    <!-- ========================================== -->
+    <!-- КЛАССИЧЕСКИЙ BOTTOM SHEET ДЛЯ ВЫБОРА ОПЛАТЫ-->
+    <!-- ========================================== -->
+    <div id="payment-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end hidden">
+        <div class="w-full bg-neutral-900 rounded-t-[32px] p-6 space-y-4 border-t border-white/10">
+            <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                <h2 id="payment-modal-title" class="text-md font-bold">Выбор способа оплаты</h2>
+                <button onclick="closePaymentSelector()" class="text-xs font-bold text-indigo-400">Отмена</button>
             </div>
-            <button onclick="triggerAction('referrals')" class="bg-white/5 border border-white/10 text-white px-3 py-2 rounded-xl text-[10px] font-bold active:scale-95 transition-transform duration-100">
-                Открыть
-            </button>
+            <div id="payment-options" class="space-y-3 pt-2">
+                <!-- Опции оплаты подгружаются динамически -->
+            </div>
         </div>
+    </div>
 
-        <div class="space-y-1.5">
-            <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider px-1 block">Документы</span>
-            <button onclick="showDoc('oferta')" class="w-full bg-card border border-thin py-3 px-4 rounded-xl text-left text-xs opacity-90 flex justify-between">
-                <span>📄 Публичная оферта</span>
-                <span class="opacity-30">➔</span>
-            </button>
-            <button onclick="showDoc('privacy')" class="w-full bg-card border border-thin py-3 px-4 rounded-xl text-left text-xs opacity-90 flex justify-between">
-                <span>🔒 Политика конфиденциальности</span>
-                <span class="opacity-30">➔</span>
-            </button>
+    <!-- ========================================== -->
+    <!-- УНИВЕРСАЛЬНЫЙ ПОДВИЖНЫЙ ЭКРАН (MODALS)      -->
+    <!-- ========================================== -->
+    <div id="universal-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end hidden">
+        <div class="w-full max-h-[75vh] bg-neutral-900 rounded-t-[32px] p-6 overflow-y-auto space-y-4 border-t border-white/10">
+            <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                <h2 id="universal-modal-title" class="text-md font-bold">Раздел</h2>
+                <button onclick="closeUniversalModal()" class="text-xs font-bold text-indigo-400 bg-white/5 px-4 py-2 rounded-xl">Закрыть</button>
+            </div>
+            <div id="universal-modal-content" class="text-sm opacity-80 whitespace-pre-line pb-8">
+                <!-- Контент -->
+            </div>
         </div>
     </div>
 
@@ -201,19 +334,16 @@
             <p class="text-xs text-[var(--hint-color)]">Пытаемся автоматически запустить приложение Happ для установки подписки...</p>
         </div>
 
-        <!-- Кнопка принудительного открытия в приложении -->
         <a id="manual-deeplink-btn" href="#" class="btn-action w-full py-4 rounded-2xl font-bold text-center block active:scale-95 transition-transform duration-100">
             ⚡ Открыть в Happ
         </a>
 
-        <!-- Блок «Если приложение не установлено» -->
-        <div class="bg-card border border-thin p-5 rounded-3xl space-y-4">
+        <div class="bg-glass border-glass border p-5 rounded-3xl space-y-4">
             <div class="text-center space-y-1">
                 <h3 class="font-bold text-sm">Приложение Happ не открылось?</h3>
                 <p class="text-xs text-[var(--hint-color)]">Возможно, на вашем устройстве не установлено приложение Happ. Пожалуйста, скачайте его:</p>
             </div>
             
-            <!-- Кнопки загрузки -->
             <div class="grid grid-cols-2 gap-2">
                 <a href="https://play.google.com/store/apps/details?id=com.happproxy" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🤖 Android</a>
                 <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🍏 iPhone</a>
@@ -223,7 +353,6 @@
                 <a href="https://happ.info" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🖥️ macOS</a>
             </div>
             
-            <!-- Альтернативное копирование вручную -->
             <div class="space-y-2 pt-3 border-t border-white/5">
                 <p class="text-[11px] text-center text-[var(--hint-color)]">Или скопируйте ключ и вставьте его в приложение вручную:</p>
                 <div class="flex gap-2">
@@ -235,29 +364,14 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ДОКУМЕНТОВ              -->
-    <!-- ========================================== -->
-    <div id="doc-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-end hidden">
-        <div class="w-full max-h-[75vh] bg-neutral-900 rounded-t-3xl p-5 overflow-y-auto space-y-4 border-t border-white/10">
-            <div class="flex justify-between items-center border-b border-white/5 pb-2.5">
-                <h2 id="modal-title" class="text-sm font-bold">Документ</h2>
-                <button onclick="closeDoc()" class="text-[10px] font-bold text-indigo-400 bg-white/5 px-3 py-1.5 rounded-lg">Закрыть</button>
-            </div>
-            <div id="modal-content" class="text-xs leading-relaxed text-[var(--hint-color)] whitespace-pre-line pb-8">
-                <!-- Текст -->
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
     <!-- НИЖНЯЯ ПАНЕЛЬ НАВИГАЦИИ (NAV BAR)          -->
     <!-- ========================================== -->
-    <div id="navbar" class="fixed bottom-0 left-0 right-0 h-20 border-t border-thin flex justify-around items-center px-6 z-40 bg-card">
-        <button onclick="switchTab('home')" id="nav-home" class="nav-btn flex flex-col items-center justify-center space-y-1 text-[9px] font-bold tracking-wider uppercase opacity-100 transition-all">
-            <svg class="w-5 h-5 text-[var(--button-color)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div id="navbar" class="fixed bottom-0 left-0 right-0 h-24 border-t border-glass flex justify-around items-center px-6 z-40 bg-glass backdrop-blur-2xl">
+        <button onclick="switchTab('home')" id="nav-home" class="nav-btn flex flex-col items-center justify-center space-y-1.5 text-[10px] font-bold tracking-wider uppercase transition-all duration-200">
+            <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
             </svg>
-            <span class="text-[var(--button-color)]">Главная</span>
+            <span class="text-indigo-400">Главная</span>
         </button>
 
         <button onclick="switchTab('tariffs')" id="nav-tariffs" class="nav-btn flex flex-col items-center justify-center space-y-1.5 text-[10px] font-bold tracking-wider uppercase opacity-40 transition-all duration-200">
@@ -267,8 +381,8 @@
             <span>Тарифы</span>
         </button>
 
-        <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn flex flex-col items-center justify-center space-y-1 text-[9px] font-bold tracking-wider uppercase opacity-45 transition-all">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn flex flex-col items-center justify-center space-y-1.5 text-[10px] font-bold tracking-wider uppercase opacity-45 transition-all">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
             </svg>
             <span>Профиль</span>
@@ -279,7 +393,10 @@
     <script>
         const DOCS = {
             oferta: `📄 ПУБЛИЧНАЯ ОФЕРТА\n\n1. Предмет соглашения:\nСервис Вспышка VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату не подлежат.`,
-            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы не передаем ваши данные третьим лицам.`
+            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы не передаем ваши данные третьим лицам.`,
+            my_subs: `💳 ВАШИ ПОДПИСКИ\n\nУ вас подключен тестовый/основной период подписки.\n\n▫️ Состояние: Активно\n▫️ Серверов доступно: 1 (Сверхскоростной)\n▫️ Протокол шифрования: VLESS Reality`,
+            withdraws: `📥 ИСТОРИЯ ВЫВОДОВ\n\nИстория выплат по реферальной программе:\n\nВыплат пока не производилось. Приглашайте друзей по реферальной ссылке в вашем профиле, чтобы заработать бонусные дни VPN!`,
+            payments: `🧾 ИСТОРИЯ ПЛАТЕЖЕЙ\n\nСписок ваших транзакций:\n\n▫️ Платежей по картам или криптовалюте не обнаружено.\n▫️ Пробный период 3 дня: Успешно начислен.`
         };
     </script>
 
@@ -288,57 +405,172 @@
         tg.ready();
         tg.expand();
 
-        // Получение имени бота из URL параметров
+        // Считываем имя бота из параметров ссылки
         const urlParams = new URLSearchParams(window.location.search);
         const botUsername = urlParams.get('bot') || "Vspyshka_VPN_bot";
 
-        // Профиль
-        document.getElementById('user-name').innerText = tg.initDataUnsafe?.user?.username ? '@' + tg.initDataUnsafe.user.username : 'NoUsername';
-        document.getElementById('user-id').innerText = tg.initDataUnsafe?.user?.id || '-';
+        // Загрузка пользовательских настроек (Локальное хранилище)
+        let customNick = localStorage.getItem('user_nick');
+        let customAvatar = localStorage.getItem('user_avatar');
 
-        // Навигация между вкладками
+        const telegramNick = tg.initDataUnsafe?.user?.username ? '@' + tg.initDataUnsafe.user.username : 'NoUsername';
+        document.getElementById('display-telegram-username').innerText = telegramNick;
+        
+        // Установка Ника и Аватара
+        function updateProfileUI() {
+            const finalNick = customNick || tg.initDataUnsafe?.user?.username || 'Пользователь';
+            document.getElementById('display-nick').innerText = finalNick;
+            
+            const avatarImg = document.getElementById('user-avatar');
+            const placeholder = document.getElementById('user-avatar-placeholder');
+            
+            if (customAvatar && customAvatar.startsWith('http')) {
+                avatarImg.src = customAvatar;
+                avatarImg.classList.remove('hidden');
+                placeholder.classList.add('hidden');
+            } else {
+                avatarImg.classList.add('hidden');
+                placeholder.innerText = finalNick.substring(0, 1).toUpperCase();
+                placeholder.classList.remove('hidden');
+            }
+        }
+        updateProfileUI();
+
+        // Отображение ID
+        document.getElementById('user-id').innerText = tg.initDataUnsafe?.user?.id || '1296913836';
+
+        // Переключение вкладок
         function switchTab(tabId) {
             tg.HapticFeedback.impactOccurred('light');
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            
+            // Скрываем все вкладки
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.add('hidden');
+                content.classList.remove('fade-in-up');
+            });
+            
+            // Показываем текущую вкладку с плавной анимацией
+            const targetTab = document.getElementById('tab-' + tabId);
+            targetTab.classList.remove('hidden');
+            targetTab.classList.add('fade-in-up');
 
+            // Сбрасываем цвета кнопок в меню на неактивные
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.add('opacity-45');
                 btn.querySelector('svg').style.color = 'var(--hint-color)';
                 btn.querySelector('span').style.color = 'var(--hint-color)';
             });
 
+            // Активируем нужную кнопку меню
             const activeBtn = document.getElementById('nav-' + tabId);
             activeBtn.classList.remove('opacity-45');
             activeBtn.querySelector('svg').style.color = 'var(--button-color)';
             activeBtn.querySelector('span').style.color = 'var(--button-color)';
         }
 
-        // Действия в чате
+        // Вызов действий в чате
         function triggerAction(actionName) {
             tg.HapticFeedback.impactOccurred('medium');
             tg.openTelegramLink(`https://t.me/${botUsername}?start=${actionName}`);
         }
 
-        // Активация промокода
-        function activatePromo() {
-            const codeInput = document.getElementById('promo-input');
-            const code = codeInput.value.trim().toUpperCase();
+        // Открытие выбора способов оплаты для тарифов (Базовый / Премиум)
+        function openPaymentSelector(tariffType) {
+            tg.HapticFeedback.impactOccurred('light');
+            const modalTitle = document.getElementById('payment-modal-title');
+            const optionsContainer = document.getElementById('payment-options');
             
-            if (code) {
+            if (tariffType === 'basic') {
+                modalTitle.innerText = "Оплата тарифа Базовый (1 месяц)";
+                optionsContainer.innerHTML = `
+                    <button onclick="triggerAction('stars_1')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
+                        <span>⭐ Telegram Stars (100)</span>
+                        <span class="opacity-30">➔</span>
+                    </button>
+                    <button onclick="triggerAction('crypto_1')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
+                        <span>💎 CryptoBot (1.95 USDT)</span>
+                        <span class="opacity-30">➔</span>
+                    </button>
+                `;
+            } else if (tariffType === 'premium') {
+                modalTitle.innerText = "Оплата тарифа Премиум (3 месяца)";
+                optionsContainer.innerHTML = `
+                    <button onclick="triggerAction('stars_3')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
+                        <span>⭐ Telegram Stars (250)</span>
+                        <span class="opacity-30">➔</span>
+                    </button>
+                    <button onclick="triggerAction('crypto_3')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
+                        <span>💎 CryptoBot (3.50 USDT)</span>
+                        <span class="opacity-30">➔</span>
+                    </button>
+                `;
+            }
+            
+            document.getElementById('payment-modal').classList.remove('hidden');
+        }
+
+        function closePaymentSelector() {
+            document.getElementById('payment-modal').classList.add('hidden');
+        }
+
+        // Редактирование профиля (Модалка)
+        function editProfile() {
+            tg.HapticFeedback.impactOccurred('light');
+            document.getElementById('edit-nick-input').value = customNick || tg.initDataUnsafe?.user?.username || 'Пользователь';
+            document.getElementById('edit-avatar-input').value = customAvatar || '';
+            document.getElementById('edit-profile-modal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-profile-modal').classList.add('hidden');
+        }
+
+        function saveProfile() {
+            const nick = document.getElementById('edit-nick-input').value.trim();
+            const avatar = document.getElementById('edit-avatar-input').value.trim();
+            
+            if (nick) {
+                localStorage.setItem('user_nick', nick);
+                localStorage.setItem('user_avatar', avatar);
+                customNick = nick;
+                customAvatar = avatar;
+                updateProfileUI();
                 tg.HapticFeedback.notificationOccurred('success');
-                triggerAction('promo_' + code);
-                codeInput.value = '';
+                closeEditModal();
             } else {
                 tg.HapticFeedback.notificationOccurred('error');
-                tg.showAlert('Пожалуйста, введите промокод!');
+                tg.showAlert('Имя пользователя не может быть пустым!');
             }
         }
 
-        // Модальное окно
+        // Универсальное модальное окно для внутренних вкладок профиля
+        function openModal(sectionId) {
+            tg.HapticFeedback.impactOccurred('light');
+            const modalTitle = document.getElementById('universal-modal-title');
+            const modalContent = document.getElementById('universal-modal-content');
+            
+            if (sectionId === 'my_subs') {
+                modalTitle.innerText = "Мои подписки";
+                modalContent.innerText = DOCS.my_subs;
+            } else if (sectionId === 'withdraws') {
+                modalTitle.innerText = "История выводов";
+                modalContent.innerText = DOCS.withdraws;
+            } else if (sectionId === 'payments') {
+                modalTitle.innerText = "История платежей";
+                modalContent.innerText = DOCS.payments;
+            }
+            
+            document.getElementById('universal-modal').classList.remove('hidden');
+        }
+
+        function closeUniversalModal() {
+            document.getElementById('universal-modal').classList.add('hidden');
+        }
+
+        // Модальное окно стандартных документов
         function showDoc(docId) {
             tg.HapticFeedback.impactOccurred('light');
-            document.getElementById('modal-title').innerText = docId === 'oferta' ? 'Публичная оферта' : 'Политика конфиденциальности';
+            document.getElementById('modal-title').innerText = docId === 'oferta' ? 'Пользовательское соглашение' : 'Политика конфиденциальности';
             document.getElementById('modal-content').innerText = DOCS[docId];
             document.getElementById('doc-modal').classList.remove('hidden');
         }
@@ -347,31 +579,30 @@
             document.getElementById('doc-modal').classList.add('hidden');
         }
 
-        // Логика копирования ключа на экране импорта
+        // Копирование ключа на экране авто-импорта
         function copyImportKey() {
             tg.HapticFeedback.notificationOccurred('success');
             const keyField = document.getElementById('import-key-input');
             keyField.select();
             keyField.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(keyField.value);
-            tg.showAlert('Ключ успешно скопирован в буфер обмена!');
+            tg.showAlert('Ключ успешно скопирован!');
         }
 
-        // Логика проверки прямого перехода к импорту (если передан параметр ?import=...)
+        // Логика проверки прямого перехода к авто-импорту (?import=...)
         const importParam = urlParams.get('import');
         if (importParam) {
             try {
-                // Безопасное декодирование UTF-8 Base64
                 const rawKey = decodeURIComponent(escape(atob(importParam)));
                 
                 // Скрываем навигационную панель
                 document.getElementById('navbar').classList.add('hidden');
                 
-                // Переключаем на экран импорта
+                // Переключаем на экран авто-импорта
                 document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
                 document.getElementById('tab-import').classList.remove('hidden');
                 
-                // Заполняем ссылки и поля на экране импорта
+                // Заполняем ссылки и поля
                 document.getElementById('manual-deeplink-btn').href = rawKey;
                 document.getElementById('import-key-input').value = rawKey;
                 
@@ -383,7 +614,7 @@
                 console.error("Ошибка декодирования ключа:", e);
             }
         } else {
-            // Если параметра импорта нет, проверяем прямые переходы на доки
+            // Если параметра импорта нет, проверяем прямые переходы на юридические документы
             const pageParam = urlParams.get('page');
             if (pageParam === 'oferta' || pageParam === 'privacy') {
                 showDoc(pageParam);
