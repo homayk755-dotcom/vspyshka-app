@@ -1,9 +1,9 @@
-     <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вспышка VPN</title>
+    <title>Aurix VPN</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SDK Telegram WebApp -->
@@ -15,7 +15,7 @@
             --secondary-bg: var(--tg-theme-secondary-bg-color, #120f24);
             --button-color: var(--tg-theme-button-color, #5a54f0);
             --button-text: var(--tg-theme-button-text-color, #ffffff);
-            --hint-color: var(--tg-theme-hint-color, #707585);
+            --hint-color: var(--tg-theme-hint-color, #9fa4b3);
         }
         
         body {
@@ -140,7 +140,7 @@
                 </svg>
             </div>
             <div class="text-center space-y-1">
-                <h1 class="text-3xl font-black tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">Вспышка VPN</h1>
+                <h1 class="text-3xl font-black tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">Aurix VPN</h1>
                 <p class="text-xs text-[var(--hint-color)]">Зашифрованный туннель • Полная анонимность</p>
             </div>
         </div>
@@ -296,7 +296,8 @@
 
         <!-- Список остальных кнопок -->
         <div class="space-y-2 pt-2 border-t border-white/5">
-            <button onclick="tg.openTelegramLink('https://t.me/ayrix_support_bot')"       class="scroll-reveal w-full bg-glass border-glass border py-3.5 px-4 rounded-2xl text-left text-xs font-bold flex items-center justify-between">
+            <!-- Ссылка на ваш бот поддержки -->
+            <button onclick="tg.openTelegramLink('https://t.me/vspyshka_support_bot')" class="w-full bg-glass border-glass border py-3.5 px-4 rounded-2xl text-left text-xs font-bold flex items-center justify-between">
                 <span>💬 Помощь и поддержка</span>
                 <span class="opacity-40">➔</span>
             </button>
@@ -457,7 +458,7 @@
     <!-- Тексты документов -->
     <script>
         const DOCS = {
-            oferta: `📄 ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ\n\n1. Предмет соглашения:\nСервис Вспышка VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше полное согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату и обмену не подлежат.`,
+            oferta: `📄 ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ\n\n1. Предмет соглашения:\nСервис Aurix VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше полное согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату и обмену не подлежат.`,
             privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы никогда не передаем ваши данные сторонним лицам.`,
             my_subs: `💳 ВАШИ ПОДПИСКИ\n\nУ вас подключен тестовый/основной период подписки.\n\n▫️ Состояние: Активно\n▫️ Серверов доступно: 1 (Сверхскоростной)\n▫️ Протокол шифрования: VLESS Reality`,
             withdraws: `📥 ИСТОРИЯ ВЫВОДОВ\n\nИстория выплат по реферальной программе:\n\nВыплат пока не производилось. Приглашайте друзей по реферальной ссылке в вашем профиле, чтобы заработать бонусные дни VPN!`,
@@ -471,7 +472,7 @@
         tg.expand();
 
         const urlParams = new URLSearchParams(window.location.search);
-        const botUsername = urlParams.get('bot') || "Vspyshka_VPN_bot";
+        const botUsername = urlParams.get('bot') || "Aurix_VPN_bot";
 
         // Профиль (Загрузка настроек)
         let customNick = localStorage.getItem('user_nick');
