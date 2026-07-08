@@ -187,7 +187,7 @@
             <h2 class="text-2xl font-black mt-0.5">Доступные подписки</h2>
         </div>
         
-        <div class="space-y-4">
+        <div class="space-y-5">
             <!-- БАЗОВЫЙ ТАРИФ -->
             <div id="card-basic" onclick="selectTariff('basic')" class="bg-glass border border-white/5 p-5 rounded-3xl relative overflow-hidden flex flex-col justify-between space-y-4 cursor-pointer transition-all duration-300">
                 <div id="check-basic" class="absolute top-4 right-4 w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center hidden shadow-[0_0_15px_rgba(90,84,240,0.5)]">
@@ -206,7 +206,7 @@
                     </div>
                     <div class="space-y-1.5 pt-2 border-t border-white/5">
                         <p class="text-xs text-[var(--hint-color)] flex items-center gap-2">▫️ Скорость подключения до 50 Мбит/с</p>
-                        <p class="text-xs text-[var(--hint-color)] flex items-center gap-2">▫️ Доступ к 1 активному устройству</p>
+                        <p class="text-xs text-[var(--hint-color)] flex items-center gap-2">▫️ Доступ к 1 active-устройству</p>
                         <p class="text-xs text-[var(--hint-color)] flex items-center gap-2">▫️ Протокол безопасности VLESS</p>
                     </div>
                 </div>
@@ -607,14 +607,6 @@
         </button>
     </div>
 
-    <!-- Тексты документов -->
-    <script>
-        const DOCS = {
-            oferta: `📄 ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ\n\n1. Предмет соглашения:\nСервис Aurix VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше полное согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату и обмену не подлежат.`,
-            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы никогда не передаем ваши данные третьим лицам.`
-        };
-    </script>
-
     <script>
         // ИСПРАВЛЕННЫЙ И 100% СТАБИЛЬНЫЙ МЕТОД ОПОВЕЩЕНИЙ
         function safeAlert(message) {
@@ -650,8 +642,10 @@
             localStorage.setItem('cached_expiry', expiryParam);
             startCountdown(expiryParam);
         } else {
-            document.getElementById('countdown-container').innerHTML = `<span class="text-rose-400 font-bold text-sm tracking-wide">Подписка неактивна</span>`;
-            
+            const cdContainer = document.getElementById('countdown-container');
+            if (cdContainer) {
+                cdContainer.innerHTML = `<span class="text-rose-400 font-bold text-sm tracking-wide">Подписка неактивна</span>`;
+            }
             const profileDaysLeft = document.getElementById('profile-days-left');
             if (profileDaysLeft) {
                 profileDaysLeft.innerText = "0 дней";
@@ -667,8 +661,10 @@
                 
                 if (diff <= 0) {
                     clearInterval(timer);
-                    document.getElementById('countdown-container').innerHTML = `<span class="text-rose-400 font-bold text-sm tracking-wide">Подписка истекла</span>`;
-                    
+                    const cdContainer = document.getElementById('countdown-container');
+                    if (cdContainer) {
+                        cdContainer.innerHTML = `<span class="text-rose-400 font-bold text-sm tracking-wide">Подписка истекла</span>`;
+                    }
                     const profileDaysLeft = document.getElementById('profile-days-left');
                     if (profileDaysLeft) {
                         profileDaysLeft.innerText = "0 дней";
@@ -686,14 +682,17 @@
                     profileDaysLeft.innerText = days + " дней";
                 }
                 
-                document.getElementById('countdown-container').innerHTML = `
-                    <div class="flex justify-center gap-1.5 text-xs font-bold font-mono">
-                        <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm">${days}д</span>
-                        <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm">${hours}ч</span>
-                        <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm">${minutes}м</span>
-                        <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm text-indigo-200">${seconds}с</span>
-                    </div>
-                `;
+                const cdContainer = document.getElementById('countdown-container');
+                if (cdContainer) {
+                    cdContainer.innerHTML = `
+                        <div class="flex justify-center gap-1.5 text-xs font-bold font-mono">
+                            <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm">${days}д</span>
+                            <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm">${hours}ч</span>
+                            <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm">${minutes}м</span>
+                            <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm text-indigo-200">${seconds}с</span>
+                        </div>
+                    `;
+                }
             }, 1000);
         }
 
@@ -715,7 +714,7 @@
         const refAvailVal = document.getElementById('ref-avail-val');
         if (refAvailVal) refAvailVal.innerText = availableReferrals >= 0 ? availableReferrals : 0;
 
-        // ИСПРАВЛЕНО: Безопасный парсинг данных пользователя без использования ?. (Optional Chaining)
+        // ИСПРАВЛЕНО: Безопасный парсинг данных пользователя без ?. (Удалено дублирование переменной!)
         let userTgId = '1296913836';
         if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) {
             userTgId = tg.initDataUnsafe.user.id;
@@ -747,25 +746,30 @@
                 defaultName = tg.initDataUnsafe.user.username;
             }
             const finalNick = customNick || defaultName;
-            document.getElementById('display-nick').innerText = finalNick;
+            
+            const displayNickEl = document.getElementById('display-nick');
+            if (displayNickEl) displayNickEl.innerText = finalNick;
             
             const avatarImg = document.getElementById('user-avatar');
             const placeholder = document.getElementById('user-avatar-placeholder');
             
-            if (customAvatar && customAvatar.indexOf('http') === 0) {
-                avatarImg.src = customAvatar;
-                avatarImg.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-            } else {
-                avatarImg.classList.add('hidden');
-                placeholder.innerText = finalNick.substring(0, 1).toUpperCase();
-                placeholder.classList.remove('hidden');
+            if (avatarImg && placeholder) {
+                if (customAvatar && customAvatar.indexOf('http') === 0) {
+                    avatarImg.src = customAvatar;
+                    avatarImg.classList.remove('hidden');
+                    placeholder.classList.add('hidden');
+                } else {
+                    avatarImg.classList.add('hidden');
+                    placeholder.innerText = finalNick.substring(0, 1).toUpperCase();
+                    placeholder.classList.remove('hidden');
+                }
             }
         }
         updateProfileUI();
 
         // ID
-        document.getElementById('user-id').innerText = userTgId;
+        const userIdEl = document.getElementById('user-id');
+        if (userIdEl) userIdEl.innerText = userTgId;
 
         // Навигация между вкладками с неоновым свечением
         function switchTab(tabId) {
@@ -779,22 +783,30 @@
             });
             
             const targetTab = document.getElementById('tab-' + tabId);
-            targetTab.classList.remove('hidden');
-            targetTab.classList.add('fade-in-up');
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+                targetTab.classList.add('fade-in-up');
+            }
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.add('opacity-40');
                 btn.classList.remove('active-nav');
-                btn.querySelector('svg').style.color = 'var(--hint-color)';
-                btn.querySelector('span').style.color = 'var(--hint-color)';
+                const svgEl = btn.querySelector('svg');
+                if (svgEl) svgEl.style.color = 'var(--hint-color)';
+                const spanEl = btn.querySelector('span');
+                if (spanEl) spanEl.style.color = 'var(--hint-color)';
             });
 
             const activeBtn = document.getElementById('nav-' + tabId);
-            activeBtn.classList.remove('opacity-45');
-            activeBtn.classList.remove('opacity-40');
-            activeBtn.classList.add('active-nav');
-            activeBtn.querySelector('svg').style.color = 'var(--button-color)';
-            activeBtn.querySelector('span').style.color = 'var(--button-color)';
+            if (activeBtn) {
+                activeBtn.classList.remove('opacity-45');
+                activeBtn.classList.remove('opacity-40');
+                activeBtn.classList.add('active-nav');
+                const activeSvg = activeBtn.querySelector('svg');
+                if (activeSvg) activeSvg.style.color = 'var(--button-color)';
+                const activeSpan = activeBtn.querySelector('span');
+                if (activeSpan) activeSpan.style.color = 'var(--button-color)';
+            }
         }
 
         // Вызов действий в боте
@@ -835,18 +847,26 @@
             activeTariff = tariffId;
 
             // Сбрасываем обводки и скрываем галочки
-            document.getElementById('card-basic').style.borderColor = 'rgba(255, 255, 255, 0.05)';
-            document.getElementById('card-premium').style.borderColor = 'rgba(255, 255, 255, 0.05)';
-            document.getElementById('check-basic').classList.add('hidden');
-            document.getElementById('check-premium').classList.add('hidden');
+            const cardBasic = document.getElementById('card-basic');
+            if (cardBasic) cardBasic.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            const cardPremium = document.getElementById('card-premium');
+            if (cardPremium) cardPremium.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            
+            const checkBasic = document.getElementById('check-basic');
+            if (checkBasic) checkBasic.classList.add('hidden');
+            const checkPremium = document.getElementById('check-premium');
+            if (checkPremium) checkPremium.classList.add('hidden');
 
             // Подсвечиваем выбранный тариф
             const selectedCard = document.getElementById('card-' + tariffId);
-            selectedCard.style.borderColor = 'var(--button-color)';
-            document.getElementById('check-' + tariffId).classList.remove('hidden');
+            if (selectedCard) selectedCard.style.borderColor = 'var(--button-color)';
+            
+            const activeCheck = document.getElementById('check-' + tariffId);
+            if (activeCheck) activeCheck.classList.remove('hidden');
 
             // Показываем кнопку «Оформить подписку»
-            document.getElementById('checkout-trigger-btn').classList.remove('hidden');
+            const checkoutTriggerBtn = document.getElementById('checkout-trigger-btn');
+            if (checkoutTriggerBtn) checkoutTriggerBtn.classList.remove('hidden');
         }
 
         // Открытие Bottom Sheet оформления подписки
@@ -859,38 +879,50 @@
             const nameEl = document.getElementById('checkout-tariff-name');
             const priceEl = document.getElementById('checkout-tariff-price');
 
-            if (activeTariff === 'basic') {
-                nameEl.innerText = "Тариф Базовый (1 месяц доступа)";
-                priceEl.innerText = "Стоимость: 99 ₽ (100 ⭐ или 1.95 USDT)";
-            } else {
-                nameEl.innerText = "Тариф Премиум (3 месяца доступа)";
-                priceEl.innerText = "Стоимость: 249 ₽ (250 ⭐ или 3.50 USDT)";
+            if (nameEl && priceEl) {
+                if (activeTariff === 'basic') {
+                    nameEl.innerText = "Тариф Базовый (1 месяц доступа)";
+                    priceEl.innerText = "Стоимость: 99 ₽ (100 ⭐ или 1.95 USDT)";
+                } else {
+                    nameEl.innerText = "Тариф Премиум (3 месяца доступа)";
+                    priceEl.innerText = "Стоимость: 249 ₽ (250 ⭐ или 3.50 USDT)";
+                }
             }
 
             // Сбрасываем выбранный метод оплаты внутри модалки
             activeMethod = null;
-            document.getElementById('pay-method-stars').style.borderColor = 'rgba(255, 255, 255, 0.05)';
-            document.getElementById('pay-method-crypto').style.borderColor = 'rgba(255, 255, 255, 0.05)';
-            document.getElementById('pay-check-stars').classList.add('hidden');
-            document.getElementById('pay-check-crypto').classList.add('hidden');
+            const payStars = document.getElementById('pay-method-stars');
+            if (payStars) payStars.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            const payCrypto = document.getElementById('pay-method-crypto');
+            if (payCrypto) payCrypto.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            
+            const checkStars = document.getElementById('pay-check-stars');
+            if (checkStars) checkStars.classList.add('hidden');
+            const checkCrypto = document.getElementById('pay-check-crypto');
+            if (checkCrypto) checkCrypto.classList.add('hidden');
             
             // Восстанавливаем кнопку «Оплатить»
-            document.getElementById('pay-submit-btn').innerHTML = `<span>Оплатить подписку</span>`;
+            const paySubmitBtn = document.getElementById('pay-submit-btn');
+            if (paySubmitBtn) paySubmitBtn.innerHTML = `<span>Оплатить подписку</span>`;
 
             // Показываем модальное окно
             const modalElement = document.getElementById('checkout-modal');
-            modalElement.classList.remove('hidden');
-            setTimeout(() => {
-                modalElement.classList.add('modal-active');
-            }, 10);
+            if (modalElement) {
+                modalElement.classList.remove('hidden');
+                setTimeout(() => {
+                    modalElement.classList.add('modal-active');
+                }, 10);
+            }
         }
 
         function closeCheckoutModal() {
             const modalElement = document.getElementById('checkout-modal');
-            modalElement.classList.remove('modal-active');
-            setTimeout(() => {
-                modalElement.classList.add('hidden');
-            }, 250);
+            if (modalElement) {
+                modalElement.classList.remove('modal-active');
+                setTimeout(() => {
+                    modalElement.classList.add('hidden');
+                }, 250);
+            }
         }
 
         // Выбор способа оплаты внутри модалки кликом по плашке
@@ -901,22 +933,31 @@
             activeMethod = method;
 
             // Сбрасываем оформление методов
-            document.getElementById('pay-method-stars').style.borderColor = 'rgba(255, 255, 255, 0.05)';
-            document.getElementById('pay-method-crypto').style.borderColor = 'rgba(255, 255, 255, 0.05)';
-            document.getElementById('pay-check-stars').classList.add('hidden');
-            document.getElementById('pay-check-crypto').classList.add('hidden');
+            const payStars = document.getElementById('pay-method-stars');
+            if (payStars) payStars.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            const payCrypto = document.getElementById('pay-method-crypto');
+            if (payCrypto) payCrypto.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            
+            const checkStars = document.getElementById('pay-check-stars');
+            if (checkStars) checkStars.classList.add('hidden');
+            const checkCrypto = document.getElementById('pay-check-crypto');
+            if (checkCrypto) checkCrypto.classList.add('hidden');
 
             // Подсвечиваем и ставим галочку на выбранный метод
             const selectedRow = document.getElementById('pay-method-' + method);
-            selectedRow.style.borderColor = 'var(--button-color)';
-            document.getElementById('pay-check-' + method).classList.remove('hidden');
+            if (selectedRow) selectedRow.style.borderColor = 'var(--button-color)';
+            
+            const activeCheck = document.getElementById('pay-check-' + method);
+            if (activeCheck) activeCheck.classList.remove('hidden');
 
             // Меняем текст кнопки оплаты
             const submitBtn = document.getElementById('pay-submit-btn');
-            if (activeTariff === 'basic') {
-                submitBtn.innerHTML = method === 'stars' ? '<span>Оплатить 100 ⭐</span>' : '<span>Оплатить 1.95 USDT</span>';
-            } else {
-                submitBtn.innerHTML = method === 'stars' ? '<span>Оплатить 250 ⭐</span>' : '<span>Оплатить 3.50 USDT</span>';
+            if (submitBtn) {
+                if (activeTariff === 'basic') {
+                    submitBtn.innerHTML = method === 'stars' ? '<span>Оплатить 100 ⭐</span>' : '<span>Оплатить 1.95 USDT</span>';
+                } else {
+                    submitBtn.innerHTML = method === 'stars' ? '<span>Оплатить 250 ⭐</span>' : '<span>Оплатить 3.50 USDT</span>';
+                }
             }
         }
 
@@ -935,11 +976,11 @@
                 tg.HapticFeedback.notificationOccurred('warning');
             }
             const submitBtn = document.getElementById('pay-submit-btn');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Обработка платежа...</span>';
+            }
 
-            // 1. Устанавливаем статус "Обработка..." и добавляем анимацию загрузки
-            submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Обработка платежа...</span>';
-
-            // 2. Через 800мс плавно запускаем нативную оплату
+            // Через 800мс запускаем оплату
             setTimeout(() => {
                 if (activeMethod === 'stars') {
                     payViaStars(activeTariff);
@@ -956,7 +997,6 @@
 
             if (link && link !== "null" && link !== "undefined" && link !== "") {
                 try {
-                    // Метод tg.openInvoice имеет наивысший приоритет
                     tg.openInvoice(link, function(status) {
                         if (status === 'paid') {
                             safeAlert("🎉 Оплата через Telegram Stars проведена успешно!\n\nВаша подписка продлена. Ключ доступа обновлен в вашем профиле.");
@@ -969,7 +1009,9 @@
                     });
                 } catch (err) {
                     console.error("tg.openInvoice failed, falling back to openLink:", err);
-                    tg.openLink(link); // Фолбек на запуск через браузерный слой
+                    if (tg && tg.openLink) {
+                        tg.openLink(link);
+                    }
                 }
             } else {
                 safeAlert("⚠️ Ошибка: Платежная ссылка Stars пуста!\n\nВозможные причины:\n1. Бот не перезапущен с новой версией (v=16).\n2. В @BotFather не подключена система Telegram Stars.\n3. Ссылка сгенерировалась с ошибкой на сервере.\n\nПроверьте терминал вашего бота на ПК.");
@@ -982,15 +1024,17 @@
             const link = tariffType === 'basic' ? crypto1Link : crypto3Link;
 
             if (link && link !== "null" && link !== "undefined" && link !== "") {
-                // Для CryptoBot всегда используем надежный метод openLink,
-                // который нативно открывает платежную шторку на абсолютно всех устройствах!
                 try {
-                    tg.openLink(link);
+                    if (tg && tg.openLink) {
+                        tg.openLink(link);
+                    } else {
+                        window.open(link, '_blank');
+                    }
                 } catch (err) {
-                    window.open(link, '_blank'); // Сверхнадежный браузерный обход
+                    window.open(link, '_blank');
                 }
             } else {
-                safeAlert("⚠️ Ошибка: Платежная ссылка CryptoBot пуста!\n\nВозможные причины:\n1. Бот не запущен с версией v=16.\n2. В настройках бота указан неверный CRYPTO_TOKEN.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина.");
+                safeAlert("⚠️ Ошибка: Платежная ссылка CryptoBot пуста!\n\nВозможные причины:\n1. Бот не запущен с версией v=16/17.\n2. В настройках бота указан неверный CRYPTO_TOKEN.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина.");
             }
         }
 
@@ -1003,13 +1047,19 @@
             if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.username) {
                 defaultName = tg.initDataUnsafe.user.username;
             }
-            document.getElementById('edit-nick-input').value = customNick || defaultName;
-            document.getElementById('edit-avatar-input').value = customAvatar || '';
-            document.getElementById('edit-profile-modal').classList.remove('hidden');
+            const nickInput = document.getElementById('edit-nick-input');
+            if (nickInput) nickInput.value = customNick || defaultName;
+            
+            const avatarInput = document.getElementById('edit-avatar-input');
+            if (avatarInput) avatarInput.value = customAvatar || '';
+            
+            const profileModal = document.getElementById('edit-profile-modal');
+            if (profileModal) profileModal.classList.remove('hidden');
         }
 
         function closeEditModal() {
-            document.getElementById('edit-profile-modal').classList.add('hidden');
+            const profileModal = document.getElementById('edit-profile-modal');
+            if (profileModal) profileModal.classList.add('hidden');
         }
 
         // Копирование реферальной ссылки
@@ -1027,8 +1077,11 @@
         }
 
         function saveProfile() {
-            const nick = document.getElementById('edit-nick-input').value.trim();
-            const avatar = document.getElementById('edit-avatar-input').value.trim();
+            const nickVal = document.getElementById('edit-nick-input');
+            const nick = nickVal ? nickVal.value.trim() : "";
+            
+            const avatarVal = document.getElementById('edit-avatar-input');
+            const avatar = avatarVal ? avatarVal.value.trim() : "";
             
             if (nick) {
                 localStorage.setItem('user_nick', nick);
@@ -1056,25 +1109,29 @@
             const modalTitle = document.getElementById('universal-modal-title');
             const modalContent = document.getElementById('universal-modal-content');
             
-            if (sectionId === 'my_subs') {
-                modalTitle.innerText = "Мои подписки";
-                modalContent.innerText = DOCS.my_subs;
-            } else if (sectionId === 'withdraws') {
-                modalTitle.innerText = "История выводов";
-                modalContent.innerText = DOCS.withdraws;
-            } else if (sectionId === 'payments') {
-                modalTitle.innerText = "История платежей";
-                modalContent.innerText = DOCS.payments;
+            if (modalTitle && modalContent) {
+                if (sectionId === 'my_subs') {
+                    modalTitle.innerText = "Мои подписки";
+                    modalContent.innerText = DOCS.my_subs;
+                } else if (sectionId === 'withdraws') {
+                    modalTitle.innerText = "История выводов";
+                    modalContent.innerText = DOCS.withdraws;
+                } else if (sectionId === 'payments') {
+                    modalTitle.innerText = "История платежей";
+                    modalContent.innerText = DOCS.payments;
+                }
             }
             
-            document.getElementById('universal-modal').classList.remove('hidden');
+            const univModal = document.getElementById('universal-modal');
+            if (univModal) univModal.classList.remove('hidden');
         }
 
         function closeUniversalModal() {
-            document.getElementById('universal-modal').classList.add('hidden');
+            const univModal = document.getElementById('universal-modal');
+            if (univModal) univModal.classList.add('hidden');
         }
 
-        // Модальное окно стандартных документов (ИСПРАВЛЕНО: Теперь открывается строго внутри Mini App)
+        // Модальное окно стандартных документов
         function showDoc(docId) {
             if (tg && tg.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred('light');
@@ -1083,21 +1140,25 @@
             const modalContent = document.getElementById('modal-content');
             const modalElement = document.getElementById('doc-modal');
             
-            modalTitle.innerText = docId === 'oferta' ? 'Пользовательское соглашение' : 'Политика конфиденциальности';
-            modalContent.innerText = DOCS[docId];
-            
-            modalElement.classList.remove('hidden');
-            setTimeout(() => {
-                modalElement.classList.add('modal-active');
-            }, 10);
+            if (modalTitle && modalContent && modalElement) {
+                modalTitle.innerText = docId === 'oferta' ? 'Пользовательское соглашение' : 'Политика конфиденциальности';
+                modalContent.innerText = DOCS[docId];
+                
+                modalElement.classList.remove('hidden');
+                setTimeout(() => {
+                    modalElement.classList.add('modal-active');
+                }, 10);
+            }
         }
 
         function closeDoc() {
             const modalElement = document.getElementById('doc-modal');
-            modalElement.classList.remove('modal-active');
-            setTimeout(() => {
-                modalElement.classList.add('hidden');
-            }, 250);
+            if (modalElement) {
+                modalElement.classList.remove('modal-active');
+                setTimeout(() => {
+                    modalElement.classList.add('hidden');
+                }, 250);
+            }
         }
 
         // Модальное окно рефералов
@@ -1106,36 +1167,55 @@
                 tg.HapticFeedback.impactOccurred('light');
             }
             const modalElement = document.getElementById('referrals-modal');
-            modalElement.classList.remove('hidden');
-            setTimeout(() => {
-                modalElement.classList.add('modal-active');
-            }, 10);
+            if (modalElement) {
+                modalElement.classList.remove('hidden');
+                setTimeout(() => {
+                    modalElement.classList.add('modal-active');
+                }, 10);
+            }
         }
 
         function closeReferralsModal() {
             const modalElement = document.getElementById('referrals-modal');
-            modalElement.classList.remove('modal-active');
-            setTimeout(() => {
-                modalElement.classList.add('hidden');
-            }, 250);
+            if (modalElement) {
+                modalElement.classList.remove('modal-active');
+                setTimeout(() => {
+                    modalElement.classList.add('hidden');
+                }, 250);
+            }
+        }
+
+        // Копирование реферальной ссылки
+        function copyRefLink() {
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.notificationOccurred('success');
+            }
+            const refField = document.getElementById('ref-link-input');
+            if (refField) {
+                refField.select();
+                refField.setSelectionRange(0, 99999);
+                navigator.clipboard.writeText(refField.value);
+                safeAlert('Реферальная ссылка скопирована!');
+            }
         }
 
         // Активация промокода
         function activatePromo() {
             const codeInput = document.getElementById('promo-input');
-            const code = codeInput.value.trim().toUpperCase();
-            
-            if (code) {
-                if (tg && tg.HapticFeedback) {
-                    tg.HapticFeedback.notificationOccurred('success');
+            if (codeInput) {
+                const code = codeInput.value.trim().toUpperCase();
+                if (code) {
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.notificationOccurred('success');
+                    }
+                    triggerAction('promo_' + code);
+                    codeInput.value = '';
+                } else {
+                    if (tg && tg.HapticFeedback) {
+                        tg.HapticFeedback.notificationOccurred('error');
+                    }
+                    safeAlert('Пожалуйста, введите промокод!');
                 }
-                triggerAction('promo_' + code);
-                codeInput.value = '';
-            } else {
-                if (tg && tg.HapticFeedback) {
-                    tg.HapticFeedback.notificationOccurred('error');
-                }
-                safeAlert('Пожалуйста, введите промокод!');
             }
         }
 
