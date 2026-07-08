@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -92,18 +92,18 @@
         }
 
         /* Плавные переходы для Bottom Sheet */
-        #doc-modal {
+        .bottom-sheet {
             transition: opacity 0.25s ease-out;
         }
-        #doc-modal-content-container {
+        .bottom-sheet-container {
             transform: translateY(100%);
             transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        #doc-modal.modal-active {
+        .bottom-sheet.modal-active {
             opacity: 1;
             pointer-events: auto;
         }
-        #doc-modal.modal-active #doc-modal-content-container {
+        .bottom-sheet.modal-active .bottom-sheet-container {
             transform: translateY(0);
         }
     </style>
@@ -151,7 +151,6 @@
         <div class="bg-glass border-glass border p-4 rounded-3xl text-center space-y-2 fade-in-up delay-2 shadow-inner">
             <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">ВРЕМЯ ДО ИСТЕЧЕНИЯ ПОДПИСКИ</span>
             <div id="countdown-container" class="flex justify-center gap-2">
-                <!-- Заполняется динамически через JS -->
                 <span class="text-xs text-[var(--hint-color)]">Проверка подписки...</span>
             </div>
         </div>
@@ -280,7 +279,8 @@
                 <span class="text-lg">💳</span>
                 <h4 class="font-bold text-xs">Мои подписки</h4>
             </button>
-            <button onclick="triggerAction('referrals')" class="bg-glass border-glass border p-4 rounded-2xl text-left space-y-2 active:scale-95 transition-all">
+            <!-- НАСТОЯЩАЯ ИН-АПП КНОПКА РЕФЕРАЛОВ -->
+            <button onclick="openReferralsModal()" class="bg-glass border-glass border p-4 rounded-2xl text-left space-y-2 active:scale-95 transition-all">
                 <span class="text-lg">👥</span>
                 <h4 class="font-bold text-xs">Рефералы</h4>
             </button>
@@ -307,13 +307,13 @@
 
         <!-- Список остальных кнопок -->
         <div class="space-y-2 pt-2 border-t border-white/5">
-            <!-- Ссылка на ваш бот поддержки -->
-            <button onclick="tg.openTelegramLink('https://t.me/vspyshka_support_bot')" class="w-full bg-glass border-glass border py-3.5 px-4 rounded-2xl text-left text-xs font-bold flex items-center justify-between">
+            <!-- Динамическая ссылка на ваш бот поддержки -->
+            <button id="support-btn" onclick="openSupportBot()" class="w-full bg-glass border-glass border py-3.5 px-4 rounded-2xl text-left text-xs font-bold flex items-center justify-between">
                 <span>💬 Помощь и поддержка</span>
                 <span class="opacity-40">➔</span>
             </button>
             <button onclick="showDoc('privacy')" class="w-full bg-glass border-glass border py-3.5 px-4 rounded-2xl text-left text-xs font-bold flex items-center justify-between">
-                <span>🔒 Политика конфиденциальности</span>
+                <span>🔒  Политика конфиденциальности</span>
                 <span class="opacity-40">➔</span>
             </button>
             <button onclick="showDoc('oferta')" class="w-full bg-glass border-glass border py-3.5 px-4 rounded-2xl text-left text-xs font-bold flex items-center justify-between">
@@ -366,15 +366,68 @@
     <!-- ========================================== -->
     <!-- НАСТОЯЩИЙ ИН-АПП BOTTOM SHEET ДЛЯ ДОКУМЕНТОВ-->
     <!-- ========================================== -->
-    <div id="doc-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end opacity-0 pointer-events-none">
+    <div id="doc-modal" class="bottom-sheet fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end opacity-0 pointer-events-none">
         <div onclick="closeDoc()" class="absolute inset-0"></div>
-        <div id="doc-modal-content-container" class="w-full max-h-[80vh] bg-neutral-900 rounded-t-[32px] p-6 overflow-y-auto space-y-4 border-t border-white/10 relative z-10">
+        <div id="doc-modal-content-container" class="bottom-sheet-container w-full max-h-[80vh] bg-neutral-900 rounded-t-[32px] p-6 overflow-y-auto space-y-4 border-t border-white/10 relative z-10">
             <div class="flex justify-between items-center border-b border-white/5 pb-3">
                 <h2 id="modal-title" class="text-md font-bold text-white">Документ</h2>
                 <button onclick="closeDoc()" class="text-xs font-bold text-indigo-400 bg-white/5 px-4 py-2 rounded-xl">Закрыть</button>
             </div>
             <div id="modal-content" class="text-sm leading-relaxed text-[var(--hint-color)] whitespace-pre-line pb-8">
                 <!-- Контент документа -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- НАСТОЯЩИЙ ИН-АПП BOTTOM SHEET ДЛЯ РЕФЕРАЛОВ -->
+    <!-- ========================================== -->
+    <div id="referrals-modal" class="bottom-sheet fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-end opacity-0 pointer-events-none">
+        <div onclick="closeReferralsModal()" class="absolute inset-0"></div>
+        <div id="referrals-modal-container" class="bottom-sheet-container w-full max-h-[85vh] bg-neutral-900 rounded-t-[32px] p-6 overflow-y-auto space-y-4 border-t border-white/10 relative z-10">
+            <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                <h2 class="text-md font-bold text-white">👥 Реферальная программа</h2>
+                <button onclick="closeReferralsModal()" class="text-xs font-bold text-indigo-400 bg-white/5 px-4 py-2 rounded-xl">Закрыть</button>
+            </div>
+            
+            <div class="space-y-4 text-sm opacity-90 leading-relaxed pt-2">
+                <p class="text-xs">Приглашайте друзей по ссылке и пользуйтесь VPN абсолютно бесплатно!</p>
+                
+                <div class="bg-white/5 border border-white/5 p-4 rounded-2xl space-y-1.5">
+                    <p class="text-xs text-[var(--hint-color)] font-bold">🎁 СИСТЕМА НАГРАД:</p>
+                    <p class="text-xs">▫️ Приглашенный друг получит: <b>+3 дня</b> подписки.</p>
+                    <p class="text-xs">▫️ Вы получите: <b>+7 дней</b> подписки за каждого реферала.</p>
+                </div>
+                
+                <!-- Статистика рефералов в три колонки -->
+                <div class="grid grid-cols-3 gap-2 text-center pt-1">
+                    <div class="bg-white/5 border border-white/5 p-3 rounded-2xl">
+                        <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] block">Приглашено</span>
+                        <span id="ref-total-val" class="font-extrabold text-sm text-indigo-300">0</span>
+                    </div>
+                    <div class="bg-white/5 border border-white/5 p-3 rounded-2xl border-x border-white/5">
+                        <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] block">Обменяно</span>
+                        <span id="ref-redeemed-val" class="font-extrabold text-sm text-purple-300">0</span>
+                    </div>
+                    <div class="bg-white/5 border border-white/5 p-3 rounded-2xl">
+                        <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] block">Доступно</span>
+                        <span id="ref-avail-val" class="font-extrabold text-sm text-pink-300">0</span>
+                    </div>
+                </div>
+
+                <!-- Реферальная ссылка -->
+                <div class="space-y-1.5 pt-2">
+                    <label class="text-[10px] uppercase font-bold text-[var(--hint-color)] px-1 block">Ваша ссылка для приглашения</label>
+                    <div class="flex gap-2">
+                        <input id="ref-link-input" type="text" readonly class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-[var(--hint-color)] focus:outline-none">
+                        <button onclick="copyRefLink()" class="bg-white/10 border border-white/10 text-white px-3 rounded-xl text-xs font-bold active:scale-95 transition-transform duration-100">Копировать</button>
+                    </div>
+                </div>
+
+                <!-- Кнопка обмена -->
+                <button onclick="triggerAction('redeem_ref_btn')" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3.5 rounded-2xl font-bold text-xs active:scale-95 transition-transform duration-100 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
+                    🎁 Обменять доступных рефералов на VPN
+                </button>
             </div>
         </div>
     </div>
@@ -495,6 +548,9 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const botUsername = urlParams.get('bot') || "Aurix_VPN_bot";
+        
+        // Считываем юзернейм саппорт-бота динамически из параметров URL (Идея 3)
+        const supportBotUsername = urlParams.get('support') || "ayrix_support_bot";
 
         // Офлайн-кэширование ключа (Идея 11)
         const importParam = urlParams.get('import');
@@ -544,6 +600,25 @@
             }, 1000);
         }
 
+        // Реферальная статистика (Идея 2)
+        const totalReferrals = parseInt(urlParams.get('ref_count') || localStorage.getItem('cached_ref_count') || "0");
+        const redeemedReferrals = parseInt(urlParams.get('redeemed') || localStorage.getItem('cached_redeemed_count') || "0");
+        
+        localStorage.setItem('cached_ref_count', totalReferrals);
+        localStorage.setItem('cached_redeemed_count', redeemedReferrals);
+
+        const availableReferrals = totalReferrals - redeemedReferrals;
+
+        // Заполняем реферальные счетчики в модальном окне
+        document.getElementById('ref-total-val').innerText = totalReferrals;
+        document.getElementById('ref-redeemed-val').innerText = redeemedReferrals;
+        document.getElementById('ref-avail-val').innerText = availableReferrals >= 0 ? availableReferrals : 0;
+
+        // Генерация реферальной ссылки
+        const userTgId = tg.initDataUnsafe?.user?.id || '1296913836';
+        const referralLink = `https://t.me/${botUsername}?start=ref_${userTgId}`;
+        document.getElementById('ref-link-input').value = referralLink;
+
         // Профиль (Загрузка настроек)
         let customNick = localStorage.getItem('user_nick');
         let customAvatar = localStorage.getItem('user_avatar');
@@ -571,7 +646,7 @@
         updateProfileUI();
 
         // ID
-        document.getElementById('user-id').innerText = tg.initDataUnsafe?.user?.id || '1296913836';
+        document.getElementById('user-id').innerText = userTgId;
 
         // Навигация между вкладками с неоновым свечением
         function switchTab(tabId) {
@@ -609,7 +684,13 @@
             tg.openTelegramLink(`https://t.me/${botUsername}?start=${actionName}`);
         }
 
-        // Оплата тарифов
+        // Запуск бота поддержки динамически без хардкода ссылки в HTML
+        function openSupportBot() {
+            tg.HapticFeedback.impactOccurred('light');
+            tg.openTelegramLink(`https://t.me/${supportBotUsername}`);
+        }
+
+        // Оплата тарифов прямо в приложении (без перехода в чат бота)
         function openPaymentSelector(tariffType) {
             tg.HapticFeedback.impactOccurred('light');
             const modalTitle = document.getElementById('payment-modal-title');
@@ -618,11 +699,11 @@
             if (tariffType === 'basic') {
                 modalTitle.innerText = "Оплата тарифа Базовый (1 месяц)";
                 optionsContainer.innerHTML = `
-                    <button onclick="triggerAction('stars_1')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center active:scale-95 transition-all">
+                    <button onclick="payViaStars(stars1Link)" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center active:scale-95 transition-all">
                         <span>⭐ Telegram Stars (100)</span>
                         <span class="opacity-30">➔</span>
                     </button>
-                    <button onclick="triggerAction('crypto_1')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center active:scale-95 transition-all">
+                    <button onclick="payViaCrypto(crypto1Link)" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center active:scale-95 transition-all">
                         <span>💎 CryptoBot (1.95 USDT)</span>
                         <span class="opacity-30">➔</span>
                     </button>
@@ -630,11 +711,11 @@
             } else if (tariffType === 'premium') {
                 modalTitle.innerText = "Оплата тарифа Премиум (3 месяца)";
                 optionsContainer.innerHTML = `
-                    <button onclick="triggerAction('stars_3')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
+                    <button onclick="payViaStars(stars3Link)" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
                         <span>⭐ Telegram Stars (250)</span>
                         <span class="opacity-30">➔</span>
                     </button>
-                    <button onclick="triggerAction('crypto_3')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
+                    <button onclick="payViaCrypto(crypto3Link)" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
                         <span>💎 CryptoBot (3.50 USDT)</span>
                         <span class="opacity-30">➔</span>
                     </button>
@@ -642,6 +723,43 @@
             }
             
             document.getElementById('payment-modal').classList.remove('hidden');
+        }
+
+        // Извлечение ссылок оплаты из параметров URL
+        const stars1Link = decodeURIComponent(urlParams.get('stars_1') || "");
+        const stars3Link = decodeURIComponent(urlParams.get('stars_3') || "");
+        const crypto1Link = decodeURIComponent(urlParams.get('crypto_1') || "");
+        const crypto3Link = decodeURIComponent(urlParams.get('crypto_3') || "");
+
+        // Нативная оплата Stars внутри приложения (без перехода в чат к боту)
+        function payViaStars(link) {
+            tg.HapticFeedback.impactOccurred('medium');
+            closePaymentSelector();
+            if (link) {
+                tg.openInvoice(link, function(status) {
+                    if (status === 'paid') {
+                        tg.showAlert("🎉 Оплата через Telegram Stars проведена успешно!\n\nВаша подписка продлена. Ключ доступа обновлен в вашем профиле.");
+                        switchTab('profile');
+                    } else if (status === 'cancelled') {
+                        tg.showAlert("❌ Оплата была отменена.");
+                    } else {
+                        tg.showAlert("⚠️ Не удалось завершить транзакцию.");
+                    }
+                });
+            } else {
+                tg.showAlert("⚠️ Ссылка на оплату не найдена. Пожалуйста, перезапустите Mini App.");
+            }
+        }
+
+        // Прямой запуск CryptoBot без закрытия Mini App
+        function payViaCrypto(link) {
+            tg.HapticFeedback.impactOccurred('medium');
+            closePaymentSelector();
+            if (link) {
+                tg.openTelegramLink(link); // Открывает платежный интерфейс поверх
+            } else {
+                tg.showAlert("⚠️ Ссылка на оплату не найдена. Пожалуйста, перезапустите Mini App.");
+            }
         }
 
         function closePaymentSelector() {
@@ -713,7 +831,6 @@
             modalContent.innerText = DOCS[docId];
             
             modalElement.classList.remove('hidden');
-            // Задержка на 10мс, чтобы сработал плавный CSS-переход выдвижения
             setTimeout(() => {
                 modalElement.classList.add('modal-active');
             }, 10);
@@ -722,10 +839,37 @@
         function closeDoc() {
             const modalElement = document.getElementById('doc-modal');
             modalElement.classList.remove('modal-active');
-            // Скрываем модальное окно после завершения анимации закрытия
             setTimeout(() => {
                 modalElement.classList.add('hidden');
             }, 250);
+        }
+
+        // Модальное окно рефералов
+        function openReferralsModal() {
+            tg.HapticFeedback.impactOccurred('light');
+            const modalElement = document.getElementById('referrals-modal');
+            modalElement.classList.remove('hidden');
+            setTimeout(() => {
+                modalElement.classList.add('modal-active');
+            }, 10);
+        }
+
+        function closeReferralsModal() {
+            const modalElement = document.getElementById('referrals-modal');
+            modalElement.classList.remove('modal-active');
+            setTimeout(() => {
+                modalElement.classList.add('hidden');
+            }, 250);
+        }
+
+        // Копирование реферальной ссылки
+        function copyRefLink() {
+            tg.HapticFeedback.notificationOccurred('success');
+            const refField = document.getElementById('ref-link-input');
+            refField.select();
+            refField.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(refField.value);
+            tg.showAlert('Реферальная ссылка скопирована!');
         }
 
         // Активация промокода
@@ -760,7 +904,6 @@
             const wrapper = document.getElementById('qrcode-wrapper');
             wrapper.classList.toggle('hidden');
             
-            // Генерируем QR-код только один раз при первом открытии
             if (!qrGenerated && (importParam || cachedKey)) {
                 try {
                     const finalKey = importParam ? importParam : cachedKey;
