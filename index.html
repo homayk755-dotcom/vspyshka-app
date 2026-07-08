@@ -21,7 +21,6 @@
         }
         
         body {
-            /* Сочный неоновый градиент на фоне */
             background: radial-gradient(circle at 50% -20%, rgba(90, 84, 240, 0.22) 0%, transparent 60%),
                         radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.12) 0%, transparent 55%),
                         radial-gradient(circle at 0% 50%, rgba(90, 84, 240, 0.1) 0%, transparent 50%),
@@ -225,7 +224,7 @@
                         <span class="text-xs text-indigo-300 font-bold">3 месяца</span>
                     </div>
                     <div class="flex items-baseline gap-1 pt-2">
-                        <span class="text-3xl font-black text-indigo-200">249 ₽</span>
+                        <span class="text-3xl font-black">249 ₽</span>
                         <span class="text-xs text-[var(--hint-color)]">/ 3 месяца</span>
                     </div>
                     <div class="space-y-1.5 pt-2 border-t border-indigo-500/10">
@@ -269,7 +268,7 @@
         <div class="grid grid-cols-3 gap-3 bg-glass border-glass border p-4 rounded-3xl text-center shadow-inner">
             <div class="space-y-0.5">
                 <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Баланс</span>
-                <p class="font-extrabold text-sm text-indigo-300">0.0 ₽</p>
+                <p class="font-extrabold text-sm text-indigo-300">0.00 ₽</p>
             </div>
             <div class="space-y-0.5 border-x border-white/5">
                 <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Осталось</span>
@@ -401,7 +400,7 @@
             <div class="space-y-2.5">
                 <span class="text-[10px] uppercase font-bold text-[var(--hint-color)] tracking-wider px-1">Способ оплаты</span>
                 
-                <!-- Telegram Stars (Вызов через безопасную строку 'stars') -->
+                <!-- Telegram Stars -->
                 <div id="pay-method-stars" onclick="selectPayMethod('stars')" class="bg-glass border border-white/5 p-4 rounded-2xl flex justify-between items-center cursor-pointer transition-all duration-200">
                     <div class="flex items-center gap-3">
                         <span class="text-lg">⭐</span>
@@ -417,7 +416,7 @@
                     </div>
                 </div>
 
-                <!-- CryptoBot (Вызов через безопасную строку 'crypto') -->
+                <!-- CryptoBot -->
                 <div id="pay-method-crypto" onclick="selectPayMethod('crypto')" class="bg-glass border border-white/5 p-4 rounded-2xl flex justify-between items-center cursor-pointer transition-all duration-200">
                     <div class="flex items-center gap-3">
                         <span class="text-lg">💎</span>
@@ -436,7 +435,7 @@
 
             <!-- Главная кнопка оплаты со статусом "Обработка..." -->
             <button id="pay-submit-btn" onclick="submitPayment()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-4 rounded-2xl font-black text-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                <span>Оплатить</span>
+                <span>Оплатить подписку</span>
             </button>
         </div>
     </div>
@@ -477,6 +476,7 @@
                     <p class="text-xs">▫️ Вы получите: <b>+7 дней</b> подписки за каждого реферала.</p>
                 </div>
                 
+                <!-- Статистика рефералов в три колонки -->
                 <div class="grid grid-cols-3 gap-2 text-center pt-1">
                     <div class="bg-white/5 border border-white/5 p-3 rounded-2xl">
                         <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] block">Приглашено</span>
@@ -492,6 +492,7 @@
                     </div>
                 </div>
 
+                <!-- Реферальная ссылка -->
                 <div class="space-y-1.5 pt-2">
                     <label class="text-[10px] uppercase font-bold text-[var(--hint-color)] px-1 block">Ваша ссылка для приглашения</label>
                     <div class="flex gap-2">
@@ -500,6 +501,7 @@
                     </div>
                 </div>
 
+                <!-- Кнопка обмена -->
                 <button onclick="triggerAction('redeem_ref_btn')" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3.5 rounded-2xl font-bold text-xs active:scale-95 transition-transform duration-100 shadow-[0_0_15px_rgba(99,102,241,0.2)]">
                     🎁 Обменять доступных рефералов на VPN
                 </button>
@@ -508,22 +510,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- УНИВЕРСАЛЬНЫЙ ПОДВИЖНЫЙ ЭКРАН (MODALS)      -->
-    <!-- ========================================== -->
-    <div id="universal-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end hidden">
-        <div class="w-full max-h-[75vh] bg-neutral-900 rounded-t-[32px] p-6 overflow-y-auto space-y-4 border-t border-white/10">
-            <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                <h2 id="universal-modal-title" class="text-md font-bold">Раздел</h2>
-                <button onclick="closeUniversalModal()" class="text-xs font-bold text-indigo-400 bg-white/5 px-4 py-2 rounded-xl">Закрыть</button>
-            </div>
-            <div id="universal-modal-content" class="text-sm opacity-80 whitespace-pre-line pb-8">
-                <!-- Контент -->
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- НОВЫЙ ЭКРАН: ИМПОРТ VPN-КЛЮЧА И QR-КОД     -->
+    <!-- НОВЫЙ ЭКРАН: ИМПОРТ VPN-КЛЮЧА              -->
     <!-- ========================================== -->
     <div id="tab-import" class="tab-content p-5 space-y-6 hidden">
         <div class="text-center pt-8 space-y-4">
@@ -602,6 +589,17 @@
         </button>
     </div>
 
+    <!-- Тексты документов -->
+    <script>
+        const DOCS = {
+            oferta: `📄 ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ\n\n1. Предмет соглашения:\nСервис Aurix VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше полное согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату и обмену не подлежат.`,
+            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы никогда не передаем ваши данные сторонним лицам.`,
+            my_subs: `💳 ВАШИ ПОДПИСКИ\n\nУ вас подключен тестовый/основной период подписки.\n\n▫️ Состояние: Активно\n▫️ Серверов доступно: 1 (Сверхскоростной)\n▫️ Протокол шифрования: VLESS Reality`,
+            withdraws: `📥 ИСТОРИЯ ВЫВОДОВ\n\nИстория выплат по реферальной программе:\n\nВыплат пока не производилось. Приглашайте друзей по реферальной ссылке в вашем профиле, чтобы заработать бонусные дни VPN!`,
+            payments: `🧾 ИСТОРИЯ ПЛАТЕЖЕЙ\n\nСписок ваших транзакций:\n\n▫️ Платежей по картам или криптовалюте не обнаружено.\n▫️ Пробный период 3 дня: Успешно начислен.`
+        };
+    </script>
+
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -662,6 +660,22 @@
                 `;
             }, 1000);
         }
+
+        // Вспомогательная функция для безопасного декодирования параметров URL
+        function safeDecode(val) {
+            try {
+                return decodeURIComponent(val || "");
+            } catch (e) {
+                console.error("Ошибка декодирования параметра:", e);
+                return val || "";
+            }
+        }
+
+        // Извлечение платежных инвойсов из параметров запуска
+        const stars1Link = safeDecode(urlParams.get('stars_1'));
+        const stars3Link = safeDecode(urlParams.get('stars_3'));
+        const crypto1Link = safeDecode(urlParams.get('crypto_1'));
+        const crypto3Link = safeDecode(urlParams.get('crypto_3'));
 
         // Реферальная статистика (Идея 2)
         const totalReferrals = parseInt(urlParams.get('ref_count') || localStorage.getItem('cached_ref_count') || "0");
@@ -748,12 +762,6 @@
             tg.HapticFeedback.impactOccurred('light');
             tg.openTelegramLink(`https://t.me/${supportBotUsername}`);
         }
-
-        // Извлечение платежных инвойсов из параметров запуска
-        const stars1Link = decodeURIComponent(urlParams.get('stars_1') || "");
-        const stars3Link = decodeURIComponent(urlParams.get('stars_3') || "");
-        const crypto1Link = decodeURIComponent(urlParams.get('crypto_1') || "");
-        const crypto3Link = decodeURIComponent(urlParams.get('crypto_3') || "");
 
         // ========================================================
         // ЛОГИКА ИНТЕРАКТИВНОГО ВЫБОРА И ОФОРМЛЕНИЯ ТАРИФА
@@ -872,20 +880,21 @@
             // 2. Через 800мс плавно запускаем нативную оплату
             setTimeout(() => {
                 if (activeMethod === 'stars') {
-                    // ИСПРАВЛЕНО: Безопасный вызов без подстановки ссылок в inline-разметку
-                    const link = activeTariff === 'basic' ? stars1Link : stars3Link;
-                    payViaStars(link);
+                    // Передаем простую строку без опасных inline-интерполяций
+                    payViaStars(activeTariff);
                 } else if (activeMethod === 'crypto') {
-                    // ИСПРАВЛЕНО: Безопасный вызов без подстановки ссылок в inline-разметку
-                    const link = activeTariff === 'basic' ? crypto1Link : crypto3Link;
-                    payViaCrypto(link);
+                    // Передаем простую строку без опасных inline-интерполяций
+                    payViaCrypto(activeTariff);
                 }
             }, 800);
         }
 
         // Нативная оплата Stars внутри приложения
-        function payViaStars(link) {
+        function payViaStars(tariffType) {
             closeCheckoutModal();
+            // Считываем ссылку из глобального контекста JS
+            const link = tariffType === 'basic' ? stars1Link : stars3Link;
+
             if (link && link !== "null" && link !== "undefined" && link !== "") {
                 tg.openInvoice(link, function(status) {
                     if (status === 'paid') {
@@ -898,17 +907,20 @@
                     }
                 });
             } else {
-                tg.showAlert("⚠️ Ошибка: Платежная ссылка Stars пуста!\n\nВозможные причины:\n1. Бот не перезапущен с новой версией (v=11/12).\n2. В @BotFather не подключена система Telegram Stars.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина.");
+                tg.showAlert("⚠️ Ошибка: Ссылка на оплату Stars не создана!\n\nВозможные причины:\n1. Бот не запущен с версией v=13.\n2. В @BotFather не подключена система Telegram Stars.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина (traceback).");
             }
         }
 
         // Запуск CryptoBot без закрытия Mini App
-        function payViaCrypto(link) {
+        function payViaCrypto(tariffType) {
             closeCheckoutModal();
+            // Считываем ссылку из глобального контекста JS
+            const link = tariffType === 'basic' ? crypto1Link : crypto3Link;
+
             if (link && link !== "null" && link !== "undefined" && link !== "") {
                 tg.openTelegramLink(link); // Открывает платежный интерфейс поверх
             } else {
-                tg.showAlert("⚠️ Ошибка: Платежная ссылка CryptoBot пуста!\n\nВозможные причины:\n1. Бот не перезапущен с новой версией (v=11/12).\n2. В настройках бота указан неверный CRYPTO_TOKEN.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина.");
+                tg.showAlert("⚠️ Ошибка: Ссылка на оплату CryptoBot не создана!\n\nВозможные причины:\n1. Бот не запущен с версией v=13.\n2. В настройках бота указан неверный CRYPTO_TOKEN.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина (traceback).");
             }
         }
 
