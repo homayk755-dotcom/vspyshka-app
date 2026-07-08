@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- SDK Telegram WebApp -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Подключаем безопасную библиотеку для генерации QR-кодов -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root {
             --bg-color: var(--tg-theme-bg-color, #08070d);
@@ -15,11 +17,11 @@
             --secondary-bg: var(--tg-theme-secondary-bg-color, #120f24);
             --button-color: var(--tg-theme-button-color, #5a54f0);
             --button-text: var(--tg-theme-button-text-color, #ffffff);
-            --hint-color: var(--tg-theme-hint-color, #9fa4b3);
+            --hint-color: var(--tg-theme-hint-color, #707585);
         }
         
         body {
-            /* Сочный, но мягкий неоновый градиент на фоне */
+            /* Сочный неоновый градиент на фоне */
             background: radial-gradient(circle at 50% -20%, rgba(90, 84, 240, 0.22) 0%, transparent 60%),
                         radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.12) 0%, transparent 55%),
                         radial-gradient(circle at 0% 50%, rgba(90, 84, 240, 0.1) 0%, transparent 50%),
@@ -40,7 +42,7 @@
             border-color: rgba(255, 255, 255, 0.08);
         }
 
-        /* Анимация плавного всплытия при загрузке или переключении */
+        /* Анимация плавного всплытия при загрузке */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -108,7 +110,7 @@
 </head>
 <body class="pb-24 overflow-x-hidden min-h-screen">
 
-    <!-- Фоновые декоративные свечения -->
+    <!-- Декоративные свечения -->
     <div class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-[-1]">
         <div class="absolute top-[-10%] left-[10%] w-[300px] h-[300px] rounded-full bg-indigo-500/10 blur-[80px]"></div>
         <div class="absolute bottom-[20%] right-[-10%] w-[350px] h-[350px] rounded-full bg-pink-500/10 blur-[100px]"></div>
@@ -142,6 +144,15 @@
             <div class="text-center space-y-1">
                 <h1 class="text-3xl font-black tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">Aurix VPN</h1>
                 <p class="text-xs text-[var(--hint-color)]">Зашифрованный туннель • Полная анонимность</p>
+            </div>
+        </div>
+
+        <!-- ЖИВОЙ ТАЙМЕР ОБРАТНОГО ОТСЧЕТА -->
+        <div class="bg-glass border-glass border p-4 rounded-3xl text-center space-y-2 fade-in-up delay-2 shadow-inner">
+            <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">ВРЕМЯ ДО ИСТЕЧЕНИЯ ПОДПИСКИ</span>
+            <div id="countdown-container" class="flex justify-center gap-2">
+                <!-- Заполняется динамически через JS -->
+                <span class="text-xs text-[var(--hint-color)]">Проверка подписки...</span>
             </div>
         </div>
 
@@ -297,7 +308,7 @@
         <!-- Список остальных кнопок -->
         <div class="space-y-2 pt-2 border-t border-white/5">
             <!-- Ссылка на ваш бот поддержки -->
-            <button onclick="tg.openTelegramLink('https://t.me/ayrix_support_bot')" class="w-full bg-glass border-glass border py-3.5 px-4 rounded-2xl text-left text-xs font-bold flex items-center justify-between">
+            <button onclick="tg.openTelegramLink('https://t.me/vspyshka_support_bot')" class="w-full bg-glass border-glass border py-3.5 px-4 rounded-2xl text-left text-xs font-bold flex items-center justify-between">
                 <span>💬 Помощь и поддержка</span>
                 <span class="opacity-40">➔</span>
             </button>
@@ -384,7 +395,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- НОВЫЙ ЭКРАН: ИМПОРТ VPN-КЛЮЧА              -->
+    <!-- НОВЫЙ ЭКРАН: ИМПОРТ VPN-КЛЮЧА И QR-КОД     -->
     <!-- ========================================== -->
     <div id="tab-import" class="tab-content p-5 space-y-6 hidden">
         <div class="text-center pt-8 space-y-4">
@@ -400,6 +411,17 @@
         <a id="manual-deeplink-btn" href="#" class="btn-action w-full py-4 rounded-2xl font-bold text-center block active:scale-95 transition-transform duration-100">
             ⚡ Открыть в Happ
         </a>
+
+        <!-- Кнопка генерации QR-кода -->
+        <button onclick="toggleQRCode()" class="w-full bg-glass border border-white/10 py-3.5 rounded-2xl font-bold text-xs text-center block active:scale-95 transition-transform duration-100">
+            🔍 Показать QR-код для настройки
+        </button>
+
+        <!-- Контейнер для QR-кода -->
+        <div id="qrcode-wrapper" class="bg-glass border-glass border p-5 rounded-3xl flex flex-col items-center justify-center hidden space-y-3">
+            <div id="qrcode-holder" class="p-4 bg-[#120f24] rounded-2xl border border-white/5"></div>
+            <p class="text-[10px] text-center text-[var(--hint-color)]">Наведите камеру Happ на этот код для мгновенного импорта</p>
+        </div>
 
         <div class="bg-card border border-thin p-5 rounded-3xl space-y-4">
             <div class="text-center space-y-1">
@@ -427,7 +449,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- УМЕНЬШЕННЫЙ NAV BAR С ПОДСВЕТКОЙ КНОПОК   -->
+    <!-- УМЕНЬШЕННЫЙ NAV BAR С НЕОНОВЫМ СВЕЧЕНИЕМ   -->
     <!-- ========================================== -->
     <div id="navbar" class="fixed bottom-0 left-0 right-0 h-18 border-t border-glass flex justify-around items-center px-6 z-40 bg-glass backdrop-blur-2xl py-2">
         <!-- Главная -->
@@ -473,6 +495,54 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const botUsername = urlParams.get('bot') || "Aurix_VPN_bot";
+
+        // Офлайн-кэширование ключа (Идея 11)
+        const importParam = urlParams.get('import');
+        if (importParam) {
+            localStorage.setItem('cached_vpn_key', importParam);
+        }
+        const cachedKey = localStorage.getItem('cached_vpn_key');
+
+        // Живой таймер обратного отсчета (Идея 6)
+        const expiryParam = urlParams.get('expiry') || localStorage.getItem('cached_expiry');
+        if (expiryParam && expiryParam !== 'None') {
+            localStorage.setItem('cached_expiry', expiryParam);
+            startCountdown(expiryParam);
+        } else {
+            document.getElementById('countdown-container').innerHTML = `<span class="text-rose-400 font-bold text-sm tracking-wide">Подписка неактивна</span>`;
+            document.getElementById('profile-days-left').innerText = "0 дней";
+        }
+
+        function startCountdown(dateStr) {
+            const targetDate = new Date(dateStr + "T23:59:59").getTime();
+            
+            const timer = setInterval(() => {
+                const now = new Date().getTime();
+                const diff = targetDate - now;
+                
+                if (diff <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('countdown-container').innerHTML = `<span class="text-rose-400 font-bold text-sm tracking-wide">Подписка истекла</span>`;
+                    document.getElementById('profile-days-left').innerText = "0 дней";
+                    return;
+                }
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('profile-days-left').innerText = `${days} дней`;
+                document.getElementById('countdown-container').innerHTML = `
+                    <div class="flex justify-center gap-1.5 text-xs font-bold font-mono">
+                        <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm">${days}д</span>
+                        <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm">${hours}ч</span>
+                        <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm">${minutes}м</span>
+                        <span class="bg-white/5 border border-white/5 px-2.5 py-1.5 rounded-lg text-indigo-300 shadow-sm text-indigo-200">${seconds}с</span>
+                    </div>
+                `;
+            }, 1000);
+        }
 
         // Профиль (Загрузка настроек)
         let customNick = localStorage.getItem('user_nick');
@@ -683,8 +753,35 @@
             tg.showAlert('Ключ успешно скопирован!');
         }
 
+        // Показать / Скрыть QR-код (Идея 12)
+        let qrGenerated = false;
+        function toggleQRCode() {
+            tg.HapticFeedback.impactOccurred('light');
+            const wrapper = document.getElementById('qrcode-wrapper');
+            wrapper.classList.toggle('hidden');
+            
+            // Генерируем QR-код только один раз при первом открытии
+            if (!qrGenerated && (importParam || cachedKey)) {
+                try {
+                    const finalKey = importParam ? importParam : cachedKey;
+                    const rawKey = decodeURIComponent(escape(atob(finalKey)));
+                    
+                    new QRCode(document.getElementById("qrcode-holder"), {
+                        text: rawKey,
+                        width: 160,
+                        height: 160,
+                        colorDark : "#ffffff",      // Белый QR-код под темный дизайн
+                        colorLight : "#120f24",     // Темный фон
+                        correctLevel : QRCode.CorrectLevel.H
+                    });
+                    qrGenerated = true;
+                } catch (e) {
+                    console.error("Ошибка генерации QR:", e);
+                }
+            }
+        }
+
         // Логика проверки прямого перехода к авто-импорту (?import=...)
-        const importParam = urlParams.get('import');
         if (importParam) {
             try {
                 const rawKey = decodeURIComponent(escape(atob(importParam)));
@@ -716,4 +813,4 @@
         }
     </script>
 </body>
-</html>  
+</html> 
