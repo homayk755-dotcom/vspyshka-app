@@ -585,6 +585,7 @@
     <!-- УМЕНЬШЕННЫЙ NAV BAR С НЕОНОВЫМ СВЕЧЕНИЕМ   -->
     <!-- ========================================== -->
     <div id="navbar" class="fixed bottom-0 left-0 right-0 h-18 border-t border-glass flex justify-around items-center px-6 z-40 bg-glass backdrop-blur-2xl py-2">
+        <!-- Главная -->
         <button onclick="switchTab('home')" id="nav-home" class="nav-btn flex flex-col items-center justify-center space-y-1 text-[10px] font-bold tracking-wider uppercase transition-all duration-200 active-nav">
             <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
@@ -592,6 +593,7 @@
             <span class="text-indigo-400">Главная</span>
         </button>
 
+        <!-- Тарифы -->
         <button onclick="switchTab('tariffs')" id="nav-tariffs" class="nav-btn flex flex-col items-center justify-center space-y-1 text-[10px] font-bold tracking-wider uppercase opacity-40 transition-all duration-200">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -599,6 +601,7 @@
             <span>Тарифы</span>
         </button>
 
+        <!-- Профиль -->
         <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn flex flex-col items-center justify-center space-y-1 text-[10px] font-bold tracking-wider uppercase opacity-40 transition-all duration-200">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -610,15 +613,24 @@
     <!-- Тексты документов -->
     <script>
         const DOCS = {
-            oferta: `📄 ПУБЛИЧНАЯ ОФЕРТА\n\n1. Предмет соглашения:\nСервис Aurix VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше полное согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату не подлежат.`,
-            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы не передаем ваши данные третьим лицам.`
+            oferta: `📄 ПУБЛИЧНАЯ ОФЕРТА\n\n1. Предмет соглашения:\nСервис Aurix VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату не подлежат.`,
+            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы никогда не передаем ваши данные третьим лицам.`
         };
     </script>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        // БЕЗОПАСНАЯ ИНИЦИАЛИЗАЦИЯ И ОБЪЯВЛЕНИЕ МЕТОДА НАВЕРХУ (ИСПРАВЛЕНО!)
+        function safeAlert(message) {
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showAlert) {
+                try {
+                    window.Telegram.WebApp.showAlert(message);
+                    return;
+                } catch (e) {
+                    console.error("Не удалось вызвать showAlert:", e);
+                }
+            }
+            alert(message); // Стабильный браузерный фолбек
+        }
 
         const urlParams = new URLSearchParams(window.location.search);
         const botUsername = urlParams.get('bot') || "Aurix_VPN_bot";
@@ -674,19 +686,6 @@
                     </div>
                 `;
             }, 1000);
-        }
-
-        // Вспомогательный метод безопасных алертов (Идея 3)
-        function safeAlert(message) {
-            if (tg && tg.showAlert) {
-                try {
-                    tg.showAlert(message);
-                    return;
-                } catch (e) {
-                    console.error("tg.showAlert failed, falling back to alert():", e);
-                }
-            }
-            alert(message);
         }
 
         // Реферальная статистика (Идея 2)
@@ -775,7 +774,7 @@
             tg.openTelegramLink(`https://t.me/${supportBotUsername}`);
         }
 
-        // Извлечение платежных инвойсов из параметров запуска (С автоматическим декодированием через URLSearchParams)
+        // Извлечение платежных инвойсов из параметров запуска
         const stars1Link = urlParams.get('stars_1') || "";
         const stars3Link = urlParams.get('stars_3') || "";
         const crypto1Link = urlParams.get('crypto_1') || "";
@@ -911,18 +910,23 @@
             const link = tariffType === 'basic' ? stars1Link : stars3Link;
 
             if (link && link !== "null" && link !== "undefined" && link !== "") {
-                tg.openInvoice(link, function(status) {
-                    if (status === 'paid') {
-                        safeAlert("🎉 Оплата через Telegram Stars проведена успешно!\n\nВаша подписка продлена. Ключ доступа обновлен в вашем профиле.");
-                        switchTab('profile');
-                    } else if (status === 'cancelled') {
-                        safeAlert("❌ Оплата была отменена.");
-                    } else {
-                        safeAlert("⚠️ Не удалось завершить транзакцию.");
-                    }
-                });
+                try {
+                    tg.openInvoice(link, function(status) {
+                        if (status === 'paid') {
+                            safeAlert("🎉 Оплата через Telegram Stars проведена успешно!\n\nВаша подписка продлена. Ключ доступа обновлен в вашем профиле.");
+                            switchTab('profile');
+                        } else if (status === 'cancelled') {
+                            safeAlert("❌ Оплата была отменена.");
+                        } else {
+                            safeAlert("⚠️ Не удалось завершить транзакцию.");
+                        }
+                    });
+                } catch (err) {
+                    console.error("tg.openInvoice failed, falling back to openLink:", err);
+                    tg.openLink(link); // Надежный фолбек, если метод openInvoice заблокирован клиентом
+                }
             } else {
-                safeAlert("⚠️ Ошибка: Платежная ссылка Stars пуста!\n\nВозможные причины:\n1. Бот не запущен с версией v=15.\n2. В @BotFather не подключена система Telegram Stars.\n3. Ссылка сгенерировалась с ошибкой на сервере.\n\nПроверьте терминал вашего бота на ПК.");
+                safeAlert("⚠️ Ошибка: Платежная ссылка Stars пуста!\n\nВозможные причины:\n1. Бот не перезапущен с новой версией (v=15).\n2. В @BotFather не подключена система Telegram Stars.\n3. Ссылка сгенерировалась с ошибкой на сервере.\n\nПроверьте терминал вашего бота на ПК.");
             }
         }
 
@@ -932,7 +936,13 @@
             const link = tariffType === 'basic' ? crypto1Link : crypto3Link;
 
             if (link && link !== "null" && link !== "undefined" && link !== "") {
-                tg.openTelegramLink(link); // Открывает платежный интерфейс поверх
+                // ИСПРАВЛЕНО: Для CryptoBot всегда используем надежный метод openLink,
+                // который нативно открывает платежную шторку на абсолютно всех устройствах!
+                try {
+                    tg.openLink(link);
+                } catch (err) {
+                    window.open(link, '_blank'); // Сверхнадежный браузерный обход
+                }
             } else {
                 safeAlert("⚠️ Ошибка: Платежная ссылка CryptoBot пуста!\n\nВозможные причины:\n1. Бот не запущен с версией v=15.\n2. В настройках бота указан неверный CRYPTO_TOKEN.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина.");
             }
@@ -1002,7 +1012,7 @@
             document.getElementById('universal-modal').classList.add('hidden');
         }
 
-        // Модальное окно стандартных документов
+        // Модальное окно стандартных документов (ИСПРАВЛЕНО: Теперь открывается строго внутри Mini App)
         function showDoc(docId) {
             tg.HapticFeedback.impactOccurred('light');
             const modalTitle = document.getElementById('modal-title');
@@ -1042,6 +1052,16 @@
             setTimeout(() => {
                 modalElement.classList.add('hidden');
             }, 250);
+        }
+
+        // Копирование реферальной ссылки
+        function copyRefLink() {
+            tg.HapticFeedback.notificationOccurred('success');
+            const refField = document.getElementById('ref-link-input');
+            refField.select();
+            refField.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(refField.value);
+            safeAlert('Реферальная ссылка скопирована!');
         }
 
         // Активация промокода
