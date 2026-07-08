@@ -110,7 +110,7 @@
 </head>
 <body class="pb-24 overflow-x-hidden min-h-screen">
 
-    <!-- Декоративные свечения -->
+    <!-- Фоновые декоративные свечения -->
     <div class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-[-1]">
         <div class="absolute top-[-10%] left-[10%] w-[300px] h-[300px] rounded-full bg-indigo-500/10 blur-[80px]"></div>
         <div class="absolute bottom-[20%] right-[-10%] w-[350px] h-[350px] rounded-full bg-pink-500/10 blur-[100px]"></div>
@@ -150,7 +150,7 @@
         <!-- ЖИВОЙ ТАЙМЕР ОБРАТНОГО ОТСЧЕТА -->
         <div class="bg-glass border-glass border p-4 rounded-3xl text-center space-y-2 fade-in-up delay-2 shadow-inner">
             <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">ВРЕМЯ ДО ИСТЕЧЕНИЯ ПОДПИСКИ</span>
-            <div id="countdown-container" class="flex justify-center gap-2">
+            <div id="countdown-container" class="flex justify-center gap-1.5 text-xs font-bold font-mono">
                 <span class="text-xs text-[var(--hint-color)]">Проверка подписки...</span>
             </div>
         </div>
@@ -279,7 +279,6 @@
                 <span class="text-lg">💳</span>
                 <h4 class="font-bold text-xs">Мои подписки</h4>
             </button>
-            <!-- НАСТОЯЩАЯ ИН-АПП КНОПКА РЕФЕРАЛОВ -->
             <button onclick="openReferralsModal()" class="bg-glass border-glass border p-4 rounded-2xl text-left space-y-2 active:scale-95 transition-all">
                 <span class="text-lg">👥</span>
                 <h4 class="font-bold text-xs">Рефералы</h4>
@@ -307,7 +306,6 @@
 
         <!-- Список остальных кнопок -->
         <div class="space-y-2 pt-2 border-t border-white/5">
-            <!-- Динамическая ссылка на ваш бот поддержки -->
             <button id="support-btn" onclick="openSupportBot()" class="w-full bg-glass border-glass border py-3.5 px-4 rounded-2xl text-left text-xs font-bold flex items-center justify-between">
                 <span>💬 Помощь и поддержка</span>
                 <span class="opacity-40">➔</span>
@@ -386,7 +384,7 @@
         <div onclick="closeReferralsModal()" class="absolute inset-0"></div>
         <div id="referrals-modal-container" class="bottom-sheet-container w-full max-h-[85vh] bg-neutral-900 rounded-t-[32px] p-6 overflow-y-auto space-y-4 border-t border-white/10 relative z-10">
             <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                <h2 class="text-md font-bold text-white">👥 Реферальная программа</h2>
+                <h2 id="modal-title-ref" class="text-md font-bold text-white">👥 Реферальная программа</h2>
                 <button onclick="closeReferralsModal()" class="text-xs font-bold text-indigo-400 bg-white/5 px-4 py-2 rounded-xl">Закрыть</button>
             </div>
             
@@ -433,22 +431,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- УНИВЕРСАЛЬНЫЙ ПОДВИЖНЫЙ ЭКРАН (MODALS)      -->
-    <!-- ========================================== -->
-    <div id="universal-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end hidden">
-        <div class="w-full max-h-[75vh] bg-neutral-900 rounded-t-[32px] p-6 overflow-y-auto space-y-4 border-t border-white/10">
-            <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                <h2 id="universal-modal-title" class="text-md font-bold">Раздел</h2>
-                <button onclick="closeUniversalModal()" class="text-xs font-bold text-indigo-400 bg-white/5 px-4 py-2 rounded-xl">Закрыть</button>
-            </div>
-            <div id="universal-modal-content" class="text-sm opacity-80 whitespace-pre-line pb-8">
-                <!-- Контент -->
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- НОВЫЙ ЭКРАН: ИМПОРТ VPN-КЛЮЧА И QR-КОД     -->
+    <!-- НОВЫЙ ЭКРАН: ИМПОРТ VPN-КЛЮЧА              -->
     <!-- ========================================== -->
     <div id="tab-import" class="tab-content p-5 space-y-6 hidden">
         <div class="text-center pt-8 space-y-4">
@@ -530,17 +513,6 @@
         </button>
     </div>
 
-    <!-- Тексты документов -->
-    <script>
-        const DOCS = {
-            oferta: `📄 ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ\n\n1. Предмет соглашения:\nСервис Aurix VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше полное согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату и обмену не подлежат.`,
-            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы никогда не передаем ваши данные сторонним лицам.`,
-            my_subs: `💳 ВАШИ ПОДПИСКИ\n\nУ вас подключен тестовый/основной период подписки.\n\n▫️ Состояние: Активно\n▫️ Серверов доступно: 1 (Сверхскоростной)\n▫️ Протокол шифрования: VLESS Reality`,
-            withdraws: `📥 ИСТОРИЯ ВЫВОДОВ\n\nИстория выплат по реферальной программе:\n\nВыплат пока не производилось. Приглашайте друзей по реферальной ссылке в вашем профиле, чтобы заработать бонусные дни VPN!`,
-            payments: `🧾 ИСТОРИЯ ПЛАТЕЖЕЙ\n\nСписок ваших транзакций:\n\n▫️ Платежей по картам или криптовалюте не обнаружено.\n▫️ Пробный период 3 дня: Успешно начислен.`
-        };
-    </script>
-
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -549,7 +521,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const botUsername = urlParams.get('bot') || "Aurix_VPN_bot";
         
-        // Считываем юзернейм саппорт-бота динамически из параметров URL (Идея 3)
+        // Считываем юзернейм саппорт-бота динамически из параметров URL
         const supportBotUsername = urlParams.get('support') || "ayrix_support_bot";
 
         // Офлайн-кэширование ключа (Идея 11)
@@ -690,32 +662,44 @@
             tg.openTelegramLink(`https://t.me/${supportBotUsername}`);
         }
 
+        // Извлечение ссылок оплаты из параметров URL
+        const stars1Link = decodeURIComponent(urlParams.get('stars_1') || "");
+        const stars3Link = decodeURIComponent(urlParams.get('stars_3') || "");
+        const crypto1Link = decodeURIComponent(urlParams.get('crypto_1') || "");
+        const crypto3Link = decodeURIComponent(urlParams.get('crypto_3') || "");
+
         // Оплата тарифов прямо в приложении (без перехода в чат бота)
         function openPaymentSelector(tariffType) {
             tg.HapticFeedback.impactOccurred('light');
             const modalTitle = document.getElementById('payment-modal-title');
             const optionsContainer = document.getElementById('payment-options');
             
+            // Отладочное логирование для проверки генерации ссылок
+            console.log("Stars 1 URL:", stars1Link);
+            console.log("Crypto 1 URL:", crypto1Link);
+
             if (tariffType === 'basic') {
                 modalTitle.innerText = "Оплата тарифа Базовый (1 месяц)";
+                // ИСПРАВЛЕНО: Передаем ссылки как строковые литералы в кавычках во избежание сбоев в webview
                 optionsContainer.innerHTML = `
-                    <button onclick="payViaStars(stars1Link)" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center active:scale-95 transition-all">
+                    <button onclick="payViaStars('${stars1Link}')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center active:scale-95 transition-all">
                         <span>⭐ Telegram Stars (100)</span>
                         <span class="opacity-30">➔</span>
                     </button>
-                    <button onclick="payViaCrypto(crypto1Link)" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center active:scale-95 transition-all">
+                    <button onclick="payViaCrypto('${crypto1Link}')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center active:scale-95 transition-all">
                         <span>💎 CryptoBot (1.95 USDT)</span>
                         <span class="opacity-30">➔</span>
                     </button>
                 `;
             } else if (tariffType === 'premium') {
                 modalTitle.innerText = "Оплата тарифа Премиум (3 месяца)";
+                // ИСПРАВЛЕНО: Передаем ссылки как строковые литералы в кавычках во избежание сбоев в webview
                 optionsContainer.innerHTML = `
-                    <button onclick="payViaStars(stars3Link)" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
+                    <button onclick="payViaStars('${stars3Link}')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
                         <span>⭐ Telegram Stars (250)</span>
                         <span class="opacity-30">➔</span>
                     </button>
-                    <button onclick="payViaCrypto(crypto3Link)" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
+                    <button onclick="payViaCrypto('${crypto3Link}')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
                         <span>💎 CryptoBot (3.50 USDT)</span>
                         <span class="opacity-30">➔</span>
                     </button>
@@ -725,17 +709,11 @@
             document.getElementById('payment-modal').classList.remove('hidden');
         }
 
-        // Извлечение ссылок оплаты из параметров URL
-        const stars1Link = decodeURIComponent(urlParams.get('stars_1') || "");
-        const stars3Link = decodeURIComponent(urlParams.get('stars_3') || "");
-        const crypto1Link = decodeURIComponent(urlParams.get('crypto_1') || "");
-        const crypto3Link = decodeURIComponent(urlParams.get('crypto_3') || "");
-
         // Нативная оплата Stars внутри приложения (без перехода в чат к боту)
         function payViaStars(link) {
             tg.HapticFeedback.impactOccurred('medium');
             closePaymentSelector();
-            if (link) {
+            if (link && link !== "null" && link !== "undefined" && link !== "") {
                 tg.openInvoice(link, function(status) {
                     if (status === 'paid') {
                         tg.showAlert("🎉 Оплата через Telegram Stars проведена успешно!\n\nВаша подписка продлена. Ключ доступа обновлен в вашем профиле.");
@@ -747,7 +725,7 @@
                     }
                 });
             } else {
-                tg.showAlert("⚠️ Ссылка на оплату не найдена. Пожалуйста, перезапустите Mini App.");
+                tg.showAlert("⚠️ Ссылка на оплату не найдена или пуста.\n\nПожалуйста, убедитесь, что вы запустили бота через кнопку меню или отправили команду /start, чтобы обновить платежную сессию.");
             }
         }
 
@@ -755,10 +733,10 @@
         function payViaCrypto(link) {
             tg.HapticFeedback.impactOccurred('medium');
             closePaymentSelector();
-            if (link) {
+            if (link && link !== "null" && link !== "undefined" && link !== "") {
                 tg.openTelegramLink(link); // Открывает платежный интерфейс поверх
             } else {
-                tg.showAlert("⚠️ Ссылка на оплату не найдена. Пожалуйста, перезапустите Mini App.");
+                tg.showAlert("⚠️ Ссылка на оплату не найдена или пуста.\n\nПожалуйста, убедитесь, что вы запустили бота через кнопку меню или отправили команду /start, чтобы обновить платежную сессию.");
             }
         }
 
