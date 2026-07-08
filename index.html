@@ -21,7 +21,6 @@
         }
         
         body {
-            /* Сочный неоновый градиент на фоне */
             background: radial-gradient(circle at 50% -20%, rgba(90, 84, 240, 0.22) 0%, transparent 60%),
                         radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.12) 0%, transparent 55%),
                         radial-gradient(circle at 0% 50%, rgba(90, 84, 240, 0.1) 0%, transparent 50%),
@@ -91,7 +90,7 @@
             animation: shield-glow 4s infinite ease-in-out;
         }
 
-        /* Плавные переходы для Bottom Sheet */
+        /* Плавные переходы для Bottom Sheets */
         .bottom-sheet {
             transition: opacity 0.25s ease-out;
         }
@@ -169,7 +168,7 @@
 
         <!-- Кнопки управления подпиской -->
         <div class="space-y-3 fade-in-up delay-3">
-            <button onclick="switchTab('tariffs')" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-4 rounded-2xl font-black text-center block shadow-[0_0_20px_rgba(90,84,240,0.3)] active:scale-[0.98] transition-all">
+            <button onclick="switchTab('tariffs')" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-4 rounded-2xl font-black text-center block shadow-[0_0_20px_rgba(90,84,240,0.3)] active:scale-[0.98] transition-all">
                 💳 Купить подписку
             </button>
             <button onclick="triggerAction('trial')" class="w-full bg-glass border-glass border py-4 rounded-2xl font-black text-center active:scale-[0.98] transition-transform duration-100 text-xs">
@@ -179,7 +178,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- ВКЛАДКА 2: ТАРИФЫ                          -->
+    <!-- ВКЛАДКА 2: ТАРИФЫ (ИНТЕРАКТИВНЫЙ ВЫБОР)    -->
     <!-- ========================================== -->
     <div id="tab-tariffs" class="tab-content p-4 space-y-6 hidden">
         <div class="pt-2">
@@ -187,9 +186,15 @@
             <h2 class="text-2xl font-black mt-0.5">Доступные подписки</h2>
         </div>
         
-        <div class="space-y-5">
-            <!-- БАЗОВЫЙ ТАРИФ -->
-            <div class="bg-glass border-glass border p-5 rounded-3xl relative overflow-hidden flex flex-col justify-between space-y-4">
+        <div class="space-y-4">
+            <!-- КАРТОЧКА: БАЗОВЫЙ ТАРИФ -->
+            <div id="card-basic" onclick="selectTariff('basic')" class="bg-glass border border-white/5 p-5 rounded-3xl relative overflow-hidden flex flex-col justify-between space-y-4 cursor-pointer transition-all duration-300">
+                <!-- Круглая неоновая галочка выбора -->
+                <div id="check-basic" class="absolute top-4 right-4 w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center hidden shadow-[0_0_15px_rgba(90,84,240,0.5)]">
+                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <span class="bg-slate-500/10 text-slate-300 text-[9px] uppercase font-extrabold px-3 py-1 rounded-full border border-slate-500/20">Базовый тариф</span>
@@ -205,13 +210,16 @@
                         <p class="text-xs text-[var(--hint-color)] flex items-center gap-2">▫️ Протокол безопасности VLESS</p>
                     </div>
                 </div>
-                <button onclick="openPaymentSelector('basic')" class="w-full bg-white text-black py-3 rounded-2xl font-black text-xs active:scale-[0.98] transition-all">
-                    Выбрать тариф
-                </button>
             </div>
 
-            <!-- ПРЕМИУМ ТАРИФ -->
-            <div class="bg-gradient-to-b from-indigo-950/20 to-purple-950/20 border-indigo-500/30 border-2 p-5 rounded-3xl relative overflow-hidden flex flex-col justify-between space-y-4 shadow-[0_0_25px_rgba(90,84,240,0.15)]">
+            <!-- КАРТОЧКА: ПРЕМИУМ ТАРИФ -->
+            <div id="card-premium" onclick="selectTariff('premium')" class="bg-glass border border-white/5 p-5 rounded-3xl relative overflow-hidden flex flex-col justify-between space-y-4 cursor-pointer transition-all duration-300">
+                <!-- Круглая неоновая галочка выбора -->
+                <div id="check-premium" class="absolute top-4 right-4 w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center hidden shadow-[0_0_15px_rgba(90,84,240,0.5)]">
+                    <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <span class="bg-indigo-500/20 text-indigo-300 text-[9px] uppercase font-extrabold px-3 py-1 rounded-full border border-indigo-500/40">Премиум тариф</span>
@@ -227,11 +235,13 @@
                         <p class="text-xs text-indigo-200/80 flex items-center gap-2">✦ VIP-протоколы XTLS + Reality</p>
                     </div>
                 </div>
-                <button onclick="openPaymentSelector('premium')" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3.5 rounded-2xl font-black text-xs active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(99,102,241,0.3)]">
-                    Активировать Премиум
-                </button>
             </div>
         </div>
+
+        <!-- КНОПКА ОФОРМЛЕНИЯ (СКРЫТА ДО КЛИКА НА КАРТОЧКУ ТАРИФА) -->
+        <button id="checkout-trigger-btn" onclick="openCheckoutModal()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-4 rounded-2xl font-black text-sm active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(99,102,241,0.25)] hidden">
+            🛍️ Оформить подписку
+        </button>
     </div>
 
     <!-- ========================================== -->
@@ -257,7 +267,7 @@
             </div>
         </div>
 
-        <!-- Метрики Пользователя (под ником) -->
+        <!-- Метрики Пользователя -->
         <div class="grid grid-cols-3 gap-3 bg-glass border-glass border p-4 rounded-3xl text-center shadow-inner">
             <div class="space-y-0.5">
                 <span class="text-[9px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Баланс</span>
@@ -347,17 +357,76 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- КЛАССИЧЕСКИЙ BOTTOM SHEET ДЛЯ ВЫБОРА ОПЛАТЫ-->
+    <!-- НАСТОЯЩИЙ ИН-АПП BOTTOM SHEET ДЛЯ ОПЛАТЫ   -->
     <!-- ========================================== -->
-    <div id="payment-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end hidden">
-        <div class="w-full bg-neutral-900 rounded-t-[32px] p-6 space-y-4 border-t border-white/10">
+    <div id="checkout-modal" class="bottom-sheet fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end opacity-0 pointer-events-none">
+        <div onclick="closeCheckoutModal()" class="absolute inset-0"></div>
+        <div id="checkout-modal-container" class="bottom-sheet-container w-full max-h-[90vh] bg-neutral-900 rounded-t-[32px] p-6 overflow-y-auto space-y-5 border-t border-white/10 relative z-10">
             <div class="flex justify-between items-center border-b border-white/5 pb-3">
-                <h2 id="payment-modal-title" class="text-md font-bold">Выбор способа оплаты</h2>
-                <button onclick="closePaymentSelector()" class="text-xs font-bold text-indigo-400">Отмена</button>
+                <h2 class="text-md font-bold text-white">🛍️ Оформление подписки</h2>
+                <button onclick="closeCheckoutModal()" class="text-xs font-bold text-indigo-400 bg-white/5 px-4 py-2 rounded-xl">Закрыть</button>
             </div>
-            <div id="payment-options" class="space-y-3 pt-2">
-                <!-- Опции оплаты подгружаются динамически -->
+            
+            <!-- Информация о выбранном тарифе -->
+            <div class="bg-white/5 border border-white/5 p-4 rounded-2xl space-y-1">
+                <span class="text-[9px] uppercase font-bold text-[var(--hint-color)]">Выбранный тариф</span>
+                <h3 id="checkout-tariff-name" class="font-extrabold text-base text-white">-</h3>
+                <p id="checkout-tariff-price" class="text-xs font-bold text-indigo-300">-</p>
             </div>
+
+            <!-- Предупреждение о недостаточном балансе -->
+            <div class="bg-rose-500/10 border border-rose-500/20 p-4 rounded-2xl space-y-1 shadow-sm">
+                <p class="text-xs text-rose-400 font-bold flex items-center gap-1.5">
+                    <span>⚠️</span> На балансе недостаточно средств
+                </p>
+                <p class="text-[11px] text-[var(--hint-color)] leading-relaxed">
+                    Ваш текущий баланс: <b>0.00 ₽</b>. Автоматическое списание недоступно. Пожалуйста, выберите внешний метод оплаты:
+                </p>
+            </div>
+
+            <!-- Сетка выбора внешнего метода оплаты -->
+            <div class="space-y-2.5">
+                <span class="text-[10px] uppercase font-bold text-[var(--hint-color)] tracking-wider px-1">Способ оплаты</span>
+                
+                <!-- Telegram Stars -->
+                <div id="pay-method-stars" onclick="selectPayMethod('stars')" class="bg-glass border border-white/5 p-4 rounded-2xl flex justify-between items-center cursor-pointer transition-all duration-200">
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg">⭐</span>
+                        <div class="text-left">
+                            <h4 class="font-bold text-xs text-white">Telegram Stars</h4>
+                            <p class="text-[10px] text-[var(--hint-color)]">Прямая оплата внутри мессенджера</p>
+                        </div>
+                    </div>
+                    <!-- Галочка выбора -->
+                    <div id="pay-check-stars" class="w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center hidden">
+                        <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- CryptoBot -->
+                <div id="pay-method-crypto" onclick="selectPayMethod('crypto')" class="bg-glass border border-white/5 p-4 rounded-2xl flex justify-between items-center cursor-pointer transition-all duration-200">
+                    <div class="flex items-center gap-3">
+                        <span class="text-lg">💎</span>
+                        <div class="text-left">
+                            <h4 class="font-bold text-xs text-white">CryptoBot (USDT)</h4>
+                            <p class="text-[10px] text-[var(--hint-color)]">Оплата криптовалютой (USDT TRC-20)</p>
+                        </div>
+                    </div>
+                    <!-- Галочка выбора -->
+                    <div id="pay-check-crypto" class="w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center hidden">
+                        <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Главная кнопка оплаты со статусом "Обработка..." -->
+            <button id="pay-submit-btn" onclick="submitPayment()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-4 rounded-2xl font-black text-sm active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                <span>Оплатить</span>
+            </button>
         </div>
     </div>
 
@@ -431,7 +500,22 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- НОВЫЙ ЭКРАН: ИМПОРТ VPN-КЛЮЧА              -->
+    <!-- УНИВЕРСАЛЬНЫЙ ПОДВИЖНЫЙ ЭКРАН (MODALS)      -->
+    <!-- ========================================== -->
+    <div id="universal-modal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end hidden">
+        <div class="w-full max-h-[75vh] bg-neutral-900 rounded-t-[32px] p-6 overflow-y-auto space-y-4 border-t border-white/10">
+            <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                <h2 id="universal-modal-title" class="text-md font-bold">Раздел</h2>
+                <button onclick="closeUniversalModal()" class="text-xs font-bold text-indigo-400 bg-white/5 px-4 py-2 rounded-xl">Закрыть</button>
+            </div>
+            <div id="universal-modal-content" class="text-sm opacity-80 whitespace-pre-line pb-8">
+                <!-- Контент -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- НОВЫЙ ЭКРАН: ИМПОРТ VPN-КЛЮЧА И QR-КОД     -->
     <!-- ========================================== -->
     <div id="tab-import" class="tab-content p-5 space-y-6 hidden">
         <div class="text-center pt-8 space-y-4">
@@ -520,9 +604,11 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const botUsername = urlParams.get('bot') || "Aurix_VPN_bot";
-        
-        // Считываем юзернейм саппорт-бота динамически из параметров URL
         const supportBotUsername = urlParams.get('support') || "ayrix_support_bot";
+
+        // Глобальные состояния выбора
+        let activeTariff = null; // 'basic' или 'premium'
+        let activeMethod = null; // 'stars' или 'crypto'
 
         // Офлайн-кэширование ключа (Идея 11)
         const importParam = urlParams.get('import');
@@ -581,12 +667,10 @@
 
         const availableReferrals = totalReferrals - redeemedReferrals;
 
-        // Заполняем реферальные счетчики в модальном окне
         document.getElementById('ref-total-val').innerText = totalReferrals;
         document.getElementById('ref-redeemed-val').innerText = redeemedReferrals;
         document.getElementById('ref-avail-val').innerText = availableReferrals >= 0 ? availableReferrals : 0;
 
-        // Генерация реферальной ссылки
         const userTgId = tg.initDataUnsafe?.user?.id || '1296913836';
         const referralLink = `https://t.me/${botUsername}?start=ref_${userTgId}`;
         document.getElementById('ref-link-input').value = referralLink;
@@ -633,7 +717,6 @@
             targetTab.classList.remove('hidden');
             targetTab.classList.add('fade-in-up');
 
-            // Сбрасываем цвета и свечение у всех кнопок меню
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.add('opacity-40');
                 btn.classList.remove('active-nav');
@@ -641,7 +724,6 @@
                 btn.querySelector('span').style.color = 'var(--hint-color)';
             });
 
-            // Активируем свечение у текущей кнопки меню
             const activeBtn = document.getElementById('nav-' + tabId);
             activeBtn.classList.remove('opacity-45');
             activeBtn.classList.remove('opacity-40');
@@ -656,63 +738,147 @@
             tg.openTelegramLink(`https://t.me/${botUsername}?start=${actionName}`);
         }
 
-        // Запуск бота поддержки динамически без хардкода ссылки в HTML
+        // Запуск бота поддержки
         function openSupportBot() {
             tg.HapticFeedback.impactOccurred('light');
             tg.openTelegramLink(`https://t.me/${supportBotUsername}`);
         }
 
-        // Извлечение ссылок оплаты из параметров URL
+        // Извлечение платежных инвойсов из параметров запуска
         const stars1Link = decodeURIComponent(urlParams.get('stars_1') || "");
         const stars3Link = decodeURIComponent(urlParams.get('stars_3') || "");
         const crypto1Link = decodeURIComponent(urlParams.get('crypto_1') || "");
         const crypto3Link = decodeURIComponent(urlParams.get('crypto_3') || "");
 
-        // Оплата тарифов прямо в приложении (без перехода в чат бота)
-        function openPaymentSelector(tariffType) {
-            tg.HapticFeedback.impactOccurred('light');
-            const modalTitle = document.getElementById('payment-modal-title');
-            const optionsContainer = document.getElementById('payment-options');
-            
-            // Отладочное логирование для проверки генерации ссылок
-            console.log("Stars 1 URL:", stars1Link);
-            console.log("Crypto 1 URL:", crypto1Link);
+        // ========================================================
+        // ЛОГИКА ИНТЕРАКТИВНОГО ВЫБОРА И ОФОРМЛЕНИЯ ТАРИФА
+        // ========================================================
 
-            if (tariffType === 'basic') {
-                modalTitle.innerText = "Оплата тарифа Базовый (1 месяц)";
-                // ИСПРАВЛЕНО: Передаем ссылки как строковые литералы в кавычках во избежание сбоев в webview
-                optionsContainer.innerHTML = `
-                    <button onclick="payViaStars('${stars1Link}')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center active:scale-95 transition-all">
-                        <span>⭐ Telegram Stars (100)</span>
-                        <span class="opacity-30">➔</span>
-                    </button>
-                    <button onclick="payViaCrypto('${crypto1Link}')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center active:scale-95 transition-all">
-                        <span>💎 CryptoBot (1.95 USDT)</span>
-                        <span class="opacity-30">➔</span>
-                    </button>
-                `;
-            } else if (tariffType === 'premium') {
-                modalTitle.innerText = "Оплата тарифа Премиум (3 месяца)";
-                // ИСПРАВЛЕНО: Передаем ссылки как строковые литералы в кавычках во избежание сбоев в webview
-                optionsContainer.innerHTML = `
-                    <button onclick="payViaStars('${stars3Link}')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
-                        <span>⭐ Telegram Stars (250)</span>
-                        <span class="opacity-30">➔</span>
-                    </button>
-                    <button onclick="payViaCrypto('${crypto3Link}')" class="w-full bg-white/5 border border-white/10 py-3.5 rounded-2xl font-bold text-sm text-left px-5 hover:bg-white/10 flex justify-between items-center">
-                        <span>💎 CryptoBot (3.50 USDT)</span>
-                        <span class="opacity-30">➔</span>
-                    </button>
-                `;
-            }
-            
-            document.getElementById('payment-modal').classList.remove('hidden');
+        // Выбор тарифа кликом по плашке
+        function selectTariff(tariffId) {
+            tg.HapticFeedback.impactOccurred('medium');
+            activeTariff = tariffId;
+
+            // Сбрасываем обводки и скрываем галочки
+            document.getElementById('card-basic').style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            document.getElementById('card-premium').style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            document.getElementById('check-basic').classList.add('hidden');
+            document.getElementById('check-premium').classList.add('hidden');
+
+            // Подсвечиваем выбранный тариф
+            const selectedCard = document.getElementById('card-' + tariffId);
+            selectedCard.style.borderColor = 'var(--button-color)';
+            document.getElementById('check-' + tariffId).classList.remove('hidden');
+
+            // Показываем кнопку «Оформить подписку»
+            document.getElementById('checkout-trigger-btn').classList.remove('hidden');
         }
 
-        // Нативная оплата Stars внутри приложения (без перехода в чат к боту)
-        function payViaStars(link) {
+        // Открытие Bottom Sheet оформления подписки
+        function openCheckoutModal() {
+            if (!activeTariff) return;
             tg.HapticFeedback.impactOccurred('medium');
-            closePaymentSelector();
+
+            const nameEl = document.getElementById('checkout-tariff-name');
+            const priceEl = document.getElementById('checkout-tariff-price');
+
+            if (activeTariff === 'basic') {
+                nameEl.innerText = "Тариф Базовый (1 месяц доступа)";
+                priceEl.innerText = "Стоимость: 99 ₽ (100 ⭐ или 1.95 USDT)";
+            } else {
+                nameEl.innerText = "Тариф Премиум (3 месяца доступа)";
+                priceEl.innerText = "Стоимость: 249 ₽ (250 ⭐ или 3.50 USDT)";
+            }
+
+            // Сбрасываем выбранный метод оплаты внутри модалки
+            activeMethod = null;
+            document.getElementById('pay-method-stars').style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            document.getElementById('pay-method-crypto').style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            document.getElementById('pay-check-stars').classList.add('hidden');
+            document.getElementById('pay-check-crypto').classList.add('hidden');
+            
+            // Восстанавливаем кнопку «Оплатить»
+            document.getElementById('pay-submit-btn').innerHTML = `<span>Оплатить подписку</span>`;
+
+            // Показываем модальное окно
+            const modalElement = document.getElementById('checkout-modal');
+            modalElement.classList.remove('hidden');
+            setTimeout(() => {
+                modalElement.classList.add('modal-active');
+            }, 10);
+        }
+
+        function closeCheckoutModal() {
+            const modalElement = document.getElementById('checkout-modal');
+            modalElement.classList.remove('modal-active');
+            setTimeout(() => {
+                modalElement.classList.add('hidden');
+            }, 250);
+        }
+
+        // Выбор способа оплаты внутри модалки кликом по плашке
+        function selectPayMethod(method) {
+            tg.HapticFeedback.impactOccurred('light');
+            activeMethod = method;
+
+            // Сбрасываем оформление методов
+            document.getElementById('pay-method-stars').style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            document.getElementById('pay-method-crypto').style.borderColor = 'rgba(255, 255, 255, 0.05)';
+            document.getElementById('pay-check-stars').classList.add('hidden');
+            document.getElementById('pay-check-crypto').classList.add('hidden');
+
+            // Подсвечиваем и ставим галочку на выбранный метод
+            const selectedRow = document.getElementById('pay-method-' + method);
+            selectedRow.style.borderColor = 'var(--button-color)';
+            document.getElementById('pay-check-' + method).classList.remove('hidden');
+
+            // Меняем текст кнопки оплаты
+            const submitBtn = document.getElementById('pay-submit-btn');
+            if (activeTariff === 'basic') {
+                submitBtn.innerHTML = method === 'stars' ? '<span>Оплатить 100 ⭐</span>' : '<span>Оплатить 1.95 USDT</span>';
+            } else {
+                submitBtn.innerHTML = method === 'stars' ? '<span>Оплатить 250 ⭐</span>' : '<span>Оплатить 3.50 USDT</span>';
+            }
+        }
+
+        // Логика нажатия на кнопку "Оплатить" (Статус Обработка... -> Запуск шлюза)
+        function submitPayment() {
+            if (!activeTariff) {
+                tg.showAlert("Пожалуйста, сначала выберите тарифный план!");
+                return;
+            }
+            if (!activeMethod) {
+                tg.showAlert("Пожалуйста, выберите способ оплаты (Stars или CryptoBot)!");
+                return;
+            }
+
+            tg.HapticFeedback.notificationOccurred('warning');
+            const submitBtn = document.getElementById('pay-submit-btn');
+
+            // 1. Устанавливаем статус "Обработка..." и добавляем анимацию загрузки
+            submitBtn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Обработка платежа...</span>
+            `;
+
+            // 2. Через 800мс плавно запускаем нативную оплату
+            setTimeout(() => {
+                if (activeMethod === 'stars') {
+                    const link = activeTariff === 'basic' ? stars1Link : stars3Link;
+                    payViaStars(link);
+                } else if (activeMethod === 'crypto') {
+                    const link = activeTariff === 'basic' ? crypto1Link : crypto3Link;
+                    payViaCrypto(link);
+                }
+            }, 800);
+        }
+
+        // Нативная оплата Stars внутри приложения
+        function payViaStars(link) {
+            closeCheckoutModal();
             if (link && link !== "null" && link !== "undefined" && link !== "") {
                 tg.openInvoice(link, function(status) {
                     if (status === 'paid') {
@@ -725,23 +891,18 @@
                     }
                 });
             } else {
-                tg.showAlert("⚠️ Ссылка на оплату не найдена или пуста.\n\nПожалуйста, убедитесь, что вы запустили бота через кнопку меню или отправили команду /start, чтобы обновить платежную сессию.");
+                tg.showAlert("⚠️ Ошибка: Платежная ссылка Stars пуста!\n\nВозможные причины:\n1. Бот не перезапущен с новой версией (v=11/12).\n2. В @BotFather не подключена система Telegram Stars.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина.");
             }
         }
 
-        // Прямой запуск CryptoBot без закрытия Mini App
+        // Запуск CryptoBot без закрытия Mini App
         function payViaCrypto(link) {
-            tg.HapticFeedback.impactOccurred('medium');
-            closePaymentSelector();
+            closeCheckoutModal();
             if (link && link !== "null" && link !== "undefined" && link !== "") {
                 tg.openTelegramLink(link); // Открывает платежный интерфейс поверх
             } else {
-                tg.showAlert("⚠️ Ссылка на оплату не найдена или пуста.\n\nПожалуйста, убедитесь, что вы запустили бота через кнопку меню или отправили команду /start, чтобы обновить платежную сессию.");
+                tg.showAlert("⚠️ Ошибка: Платежная ссылка CryptoBot пуста!\n\nВозможные причины:\n1. Бот не перезапущен с новой версией (v=11/12).\n2. В настройках бота указан неверный CRYPTO_TOKEN.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина.");
             }
-        }
-
-        function closePaymentSelector() {
-            document.getElementById('payment-modal').classList.add('hidden');
         }
 
         // Редактирование профиля (Модалка)
