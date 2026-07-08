@@ -613,23 +613,23 @@
     <!-- Тексты документов -->
     <script>
         const DOCS = {
-            oferta: `📄 ПУБЛИЧНАЯ ОФЕРТА\n\n1. Предмет соглашения:\nСервис Aurix VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату не подлежат.`,
+            oferta: `📄 ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ\n\n1. Предмет соглашения:\nСервис Aurix VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше полное согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату и обмену не подлежат.`,
             privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы никогда не передаем ваши данные третьим лицам.`
         };
     </script>
 
     <script>
-        // БЕЗОПАСНАЯ ИНИЦИАЛИЗАЦИЯ И ОБЪЯВЛЕНИЕ МЕТОДА НАВЕРХУ (ИСПРАВЛЕНО!)
+        // ИСПРАВЛЕННЫЙ И 100% СТАБИЛЬНЫЙ МЕТОД ОПОВЕЩЕНИЙ
         function safeAlert(message) {
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.showAlert) {
                 try {
                     window.Telegram.WebApp.showAlert(message);
                     return;
                 } catch (e) {
-                    console.error("Не удалось вызвать showAlert:", e);
+                    console.error("tg.showAlert failed:", e);
                 }
             }
-            alert(message); // Стабильный браузерный фолбек
+            alert(message); // Всегда работает без синтаксических ошибок
         }
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -709,17 +709,22 @@
         let customNick = localStorage.getItem('user_nick');
         let customAvatar = localStorage.getItem('user_avatar');
 
-        const telegramNick = tg.initDataUnsafe?.user?.username ? '@' + tg.initDataUnsafe.user.username : 'NoUsername';
+        // ИСПРАВЛЕНО: Безопасный парсинг без ES2020 Optional Chaining (?.), 
+        // предотвращающий полный краш JS в старых веб-вью на телефонах!
+        let telegramNick = 'NoUsername';
+        if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.username) {
+            telegramNick = '@' + tg.initDataUnsafe.user.username;
+        }
         document.getElementById('display-telegram-username').innerText = telegramNick;
         
         function updateProfileUI() {
-            const finalNick = customNick || tg.initDataUnsafe?.user?.username || 'Пользователь';
+            const finalNick = customNick || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.username) || 'Пользователь';
             document.getElementById('display-nick').innerText = finalNick;
             
             const avatarImg = document.getElementById('user-avatar');
             const placeholder = document.getElementById('user-avatar-placeholder');
             
-            if (customAvatar && customAvatar.startsWith('http')) {
+            if (customAvatar && customAvatar.indexOf('http') === 0) {
                 avatarImg.src = customAvatar;
                 avatarImg.classList.remove('hidden');
                 placeholder.classList.add('hidden');
@@ -747,6 +752,7 @@
             targetTab.classList.remove('hidden');
             targetTab.classList.add('fade-in-up');
 
+            // Сбрасываем цвета и свечение у всех кнопок меню
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.add('opacity-40');
                 btn.classList.remove('active-nav');
@@ -754,6 +760,7 @@
                 btn.querySelector('span').style.color = 'var(--hint-color)';
             });
 
+            // Активируем свечение у текущей кнопки меню
             const activeBtn = document.getElementById('nav-' + tabId);
             activeBtn.classList.remove('opacity-45');
             activeBtn.classList.remove('opacity-40');
@@ -768,13 +775,13 @@
             tg.openTelegramLink(`https://t.me/${botUsername}?start=${actionName}`);
         }
 
-        // Запуск бота поддержки
+        // Запуск бота поддержки динамически без хардкода ссылки в HTML
         function openSupportBot() {
             tg.HapticFeedback.impactOccurred('light');
             tg.openTelegramLink(`https://t.me/${supportBotUsername}`);
         }
 
-        // Извлечение платежных инвойсов из параметров запуска
+        // Извлечение платежных инвойсов из параметров запуска (С автоматическим безопасным декодированием через URLSearchParams)
         const stars1Link = urlParams.get('stars_1') || "";
         const stars3Link = urlParams.get('stars_3') || "";
         const crypto1Link = urlParams.get('crypto_1') || "";
@@ -894,7 +901,7 @@
                 <span>Обработка платежа...</span>
             `;
 
-            // 2. Через 800мс плавно запускаем нативную оплату
+            // 2. Через 800мс плавно запускаем нативную оплату (БЕЗОПАСНЫЙ ВЫЗОВ ПО ИДЕНТИФИКАТОРУ ТАРИФА)
             setTimeout(() => {
                 if (activeMethod === 'stars') {
                     payViaStars(activeTariff);
@@ -911,6 +918,7 @@
 
             if (link && link !== "null" && link !== "undefined" && link !== "") {
                 try {
+                    // Метод tg.openInvoice имеет наивысший приоритет
                     tg.openInvoice(link, function(status) {
                         if (status === 'paid') {
                             safeAlert("🎉 Оплата через Telegram Stars проведена успешно!\n\nВаша подписка продлена. Ключ доступа обновлен в вашем профиле.");
@@ -923,10 +931,10 @@
                     });
                 } catch (err) {
                     console.error("tg.openInvoice failed, falling back to openLink:", err);
-                    tg.openLink(link); // Надежный фолбек, если метод openInvoice заблокирован клиентом
+                    tg.openLink(link); // Фолбек на запуск через браузерный слой
                 }
             } else {
-                safeAlert("⚠️ Ошибка: Платежная ссылка Stars пуста!\n\nВозможные причины:\n1. Бот не перезапущен с новой версией (v=15).\n2. В @BotFather не подключена система Telegram Stars.\n3. Ссылка сгенерировалась с ошибкой на сервере.\n\nПроверьте терминал вашего бота на ПК.");
+                safeAlert("⚠️ Ошибка: Платежная ссылка Stars пуста!\n\nВозможные причины:\n1. Бот не перезапущен с новой версией (v=15/16).\n2. В @BotFather не подключена система Telegram Stars.\n3. Ссылка сгенерировалась с ошибкой на сервере.\n\nПроверьте терминал вашего бота на ПК.");
             }
         }
 
@@ -936,7 +944,7 @@
             const link = tariffType === 'basic' ? crypto1Link : crypto3Link;
 
             if (link && link !== "null" && link !== "undefined" && link !== "") {
-                // ИСПРАВЛЕНО: Для CryptoBot всегда используем надежный метод openLink,
+                // Для CryptoBot всегда используем надежный метод openLink,
                 // который нативно открывает платежную шторку на абсолютно всех устройствах!
                 try {
                     tg.openLink(link);
@@ -944,14 +952,14 @@
                     window.open(link, '_blank'); // Сверхнадежный браузерный обход
                 }
             } else {
-                safeAlert("⚠️ Ошибка: Платежная ссылка CryptoBot пуста!\n\nВозможные причины:\n1. Бот не запущен с версией v=15.\n2. В настройках бота указан неверный CRYPTO_TOKEN.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина.");
+                safeAlert("⚠️ Ошибка: Платежная ссылка CryptoBot пуста!\n\nВозможные причины:\n1. Бот не запущен с версией v=15/16.\n2. В настройках бота указан неверный CRYPTO_TOKEN.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина.");
             }
         }
 
         // Редактирование профиля (Модалка)
         function editProfile() {
             tg.HapticFeedback.impactOccurred('light');
-            document.getElementById('edit-nick-input').value = customNick || tg.initDataUnsafe?.user?.username || 'Пользователь';
+            document.getElementById('edit-nick-input').value = customNick || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.username) || 'Пользователь';
             document.getElementById('edit-avatar-input').value = customAvatar || '';
             document.getElementById('edit-profile-modal').classList.remove('hidden');
         }
