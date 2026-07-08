@@ -225,7 +225,7 @@
                         <span class="text-xs text-indigo-300 font-bold">3 месяца</span>
                     </div>
                     <div class="flex items-baseline gap-1 pt-2">
-                        <span class="text-3xl font-black text-indigo-200">249 ₽</span>
+                        <span class="text-3xl font-black">249 ₽</span>
                         <span class="text-xs text-[var(--hint-color)]">/ 3 месяца</span>
                     </div>
                     <div class="space-y-1.5 pt-2 border-t border-indigo-500/10">
@@ -401,7 +401,7 @@
             <div class="space-y-2.5">
                 <span class="text-[10px] uppercase font-bold text-[var(--hint-color)] tracking-wider px-1">Способ оплаты</span>
                 
-                <!-- Telegram Stars (Вызов через безопасную строку 'stars') -->
+                <!-- Telegram Stars -->
                 <div id="pay-method-stars" onclick="selectPayMethod('stars')" class="bg-glass border border-white/5 p-4 rounded-2xl flex justify-between items-center cursor-pointer transition-all duration-200">
                     <div class="flex items-center gap-3">
                         <span class="text-lg">⭐</span>
@@ -417,7 +417,7 @@
                     </div>
                 </div>
 
-                <!-- CryptoBot (Вызов через безопасную строку 'crypto') -->
+                <!-- CryptoBot -->
                 <div id="pay-method-crypto" onclick="selectPayMethod('crypto')" class="bg-glass border border-white/5 p-4 rounded-2xl flex justify-between items-center cursor-pointer transition-all duration-200">
                     <div class="flex items-center gap-3">
                         <span class="text-lg">💎</span>
@@ -869,23 +869,25 @@
                 <span>Обработка платежа...</span>
             `;
 
-            // 2. Через 800мс плавно запускаем нативную оплату
+            // 2. Через 800мс плавно запускаем нативную оплату (БЕЗОПАСНЫЙ ВЫЗОВ ПО ИДЕНТИФИКАТОРУ ТАРИФА)
             setTimeout(() => {
                 if (activeMethod === 'stars') {
-                    // ИСПРАВЛЕНО: Безопасный вызов без подстановки ссылок в inline-разметку
-                    const link = activeTariff === 'basic' ? stars1Link : stars3Link;
-                    payViaStars(link);
+                    payViaStars(activeTariff);
                 } else if (activeMethod === 'crypto') {
-                    // ИСПРАВЛЕНО: Безопасный вызов без подстановки ссылок в inline-разметку
-                    const link = activeTariff === 'basic' ? crypto1Link : crypto3Link;
-                    payViaCrypto(link);
+                    payViaCrypto(activeTariff);
                 }
             }, 800);
         }
 
         // Нативная оплата Stars внутри приложения
-        function payViaStars(link) {
+        function payViaStars(tariffType) {
             closeCheckoutModal();
+            // Находим нужную ссылку
+            const link = tariffType === 'basic' ? stars1Link : stars3Link;
+            
+            // ОТЛАДОЧНЫЙ АЛЕРТ: Выведет на экран телефона то, что получил JavaScript
+            tg.showAlert("Диагностика Stars:\n\nПолученная ссылка:\n" + link);
+
             if (link && link !== "null" && link !== "undefined" && link !== "") {
                 tg.openInvoice(link, function(status) {
                     if (status === 'paid') {
@@ -898,17 +900,23 @@
                     }
                 });
             } else {
-                tg.showAlert("⚠️ Ошибка: Платежная ссылка Stars пуста!\n\nВозможные причины:\n1. Бот не перезапущен с новой версией (v=11/12).\n2. В @BotFather не подключена система Telegram Stars.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина.");
+                tg.showAlert("⚠️ Ошибка: Платежная ссылка Stars пуста!\n\nВозможные причины:\n1. Бот не запущен с версией v=13.\n2. В @BotFather не подключена система Telegram Stars.\n3. Ссылка сгенерировалась с ошибкой на сервере.\n\nПроверьте консоль вашего бота на ПК.");
             }
         }
 
         // Запуск CryptoBot без закрытия Mini App
-        function payViaCrypto(link) {
+        function payViaCrypto(tariffType) {
             closeCheckoutModal();
+            // Находим нужную ссылку
+            const link = tariffType === 'basic' ? crypto1Link : crypto3Link;
+
+            // ОТЛАДОЧНЫЙ АЛЕРТ: Выведет на экран телефона то, что получил JavaScript
+            tg.showAlert("Диагностика CryptoBot:\n\nПолученная ссылка:\n" + link);
+
             if (link && link !== "null" && link !== "undefined" && link !== "") {
                 tg.openTelegramLink(link); // Открывает платежный интерфейс поверх
             } else {
-                tg.showAlert("⚠️ Ошибка: Платежная ссылка CryptoBot пуста!\n\nВозможные причины:\n1. Бот не перезапущен с новой версией (v=11/12).\n2. В настройках бота указан неверный CRYPTO_TOKEN.\n\nПроверьте терминал вашего бота на сервере — там написана точная причина.");
+                tg.showAlert("⚠️ Ошибка: Платежная ссылка CryptoBot пуста!\n\nВозможные причины:\n1. Бот не запущен с версией v=13.\n2. В настройках бота указан неверный CRYPTO_TOKEN.\n\nПроверьте консоль вашего бота на ПК.");
             }
         }
 
@@ -966,7 +974,7 @@
             document.getElementById('universal-modal').classList.add('hidden');
         }
 
-        // Модальное окно стандартных документов (ИСПРАВЛЕНО: Теперь открывается строго внутри Mini App)
+        // Модальное окно стандартных документов
         function showDoc(docId) {
             tg.HapticFeedback.impactOccurred('light');
             const modalTitle = document.getElementById('modal-title');
@@ -1043,7 +1051,7 @@
             tg.showAlert('Ключ успешно скопирован!');
         }
 
-        // Показать / Скрыть QR-код (Идея 12)
+        // Показать / Скрыть QR-код
         let qrGenerated = false;
         function toggleQRCode() {
             tg.HapticFeedback.impactOccurred('light');
