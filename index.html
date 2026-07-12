@@ -1280,26 +1280,25 @@
         }
 
         // Логика автоматического импорта ссылки на подписку в Happ Proxy
-        // Логика автоматического импорта ссылки на подписку в Happ Proxy
-        function importSubscriptionToHapp() {
-            if (tg && tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('heavy');
-            }
-    
-        // Ссылка на подписку с вашим Telegram ID
-        const subLink = "http://78.17.41.32:8000/sub/" + userTgId;
-        const encodedSub = encodeURIComponent(subLink);
-    
-        // Формируем глубокую ссылку для авто-импорта в Happ под именем Aurix_VPN
-        const deepLink = "sing-box://import-remote-profile?url=" + encodedSub + "#Aurix_VPN";
-    
-        // ИСПРАВЛЕНО: Безопасно открываем глубокую ссылку через встроенный метод Telegram SDK
-        if (tg && tg.openLink) {
-            tg.openLink(deepLink); // Это заставит телефон запустить Happ напрямую без ошибок
-        } else {
-            window.location.href = deepLink;
-        }
+        // Логика автоматического импорта ссылки на подписку в Happ Proxy через редиректор
+function importSubscriptionToHapp() {
+    if (tg && tg.HapticFeedback) {
+        tg.HapticFeedback.impactOccurred('heavy');
     }
+    
+    // Ссылка на подписку с вашим Telegram ID
+    const subLink = "http://78.17.41.32:8000/sub/" + userTgId;
+    
+    // Формируем HTTPS-ссылку на страницу-редиректор на вашем GitHub
+    const redirectUrl = "https://homayk755-dotcom.github.io/vspyshka-app/redirect.html?url=" + encodeURIComponent(subLink);
+    
+    // Открываем HTTPS-ссылку во внешнем браузере (это Телеграмом разрешено на 100%!)
+    if (tg && tg.openLink) {
+        tg.openLink(redirectUrl);
+    } else {
+        window.open(redirectUrl, '_blank');
+    }
+}
 
         // Логика проверки прямого перехода к авто-импорту (?import=...)
         if (importParam) {
