@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Запуск Happ Proxy...</title>
+    <title>Импорт подписки Aurix VPN</title>
     <style>
         body {
             background-color: #08070d;
@@ -25,47 +25,77 @@
             padding: 16px 30px;
             border-radius: 16px;
             text-decoration: none;
-            margin-top: 20px;
+            margin-top: 15px;
+            border: none;
+            cursor: pointer;
             box-shadow: 0 0 20px rgba(90, 84, 240, 0.4);
             transition: transform 0.1s;
+            font-size: 14px;
         }
         .btn:active {
             transform: scale(0.98);
         }
-        .hidden {
-            display: none;
+        .instruction-box {
+            background-color: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            padding: 18px;
+            border-radius: 20px;
+            margin-top: 20px;
+            color: #4ade80;
+            text-align: left;
+            font-size: 13px;
+            line-height: 1.6;
+            animation: fadeIn 0.3s ease-out;
+            max-width: 320px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <div style="max-width: 400px;">
-        <h2 style="font-weight: 900; margin-bottom: 10px; font-size: 24px; color: #5a54f0;">AURIX VPN ⚡</h2>
-        <p id="status" style="font-size: 14px; color: #707585; line-height: 1.6;">Перенаправляем в приложение Happ Proxy...</p>
-        <a id="manual-btn" href="#" class="btn hidden">Открыть Happ Proxy</a>
+    <div style="max-width: 350px; display: flex; flex-direction: column; align-items: center;">
+        <h2 style="font-weight: 900; margin-bottom: 5px; font-size: 24px; color: #5a54f0; letter-spacing: 1px;">AURIX VPN ⚡</h2>
+        <p id="status" style="font-size: 13px; color: #707585; line-height: 1.5; margin-bottom: 15px;">Нажмите кнопку ниже для настройки подписки в Happ Proxy:</p>
+        
+        <!-- КНОПКА ВСЕГДА ВИДИМА И НАЧИНАЕТ СВЕРХУДОБНЫЙ ИМПОРТ -->
+        <button onclick="handleImport()" class="btn">⚡ ПОДКЛЮЧИТЬ ЧЕРЕЗ HAPP</button>
+        
+        <!-- Сюда будет выводиться инструкция после клика -->
+        <div id="instruction-container"></div>
     </div>
 
-    <!-- СКРИПТ ПЕРЕНЕСЕН В САМЫЙ НИЗ BODY ДЛЯ ГАРАНТИРОВАННОЙ РАБОТЫ -->
     <script>
         const params = new URLSearchParams(window.location.search);
         const subUrl = params.get('url');
-        if (subUrl) {
-            // Формируем универсальную глубокую ссылку Clash, которую нативно поддерживает Happ Proxy
+
+        function handleImport() {
+            if (!subUrl) {
+                alert("Ошибка: Ссылка на подписку отсутствует.");
+                return;
+            }
+
+            // 1. Копируем ссылку подписки в буфер обмена телефона
+            navigator.clipboard.writeText(subUrl).then(() => {
+                // Выводим красивую наглядную инструкцию на экран
+                document.getElementById('instruction-container').innerHTML = `
+                    <div class="instruction-box">
+                        <p style="font-weight: 900; font-size: 14px; margin-top: 0; margin-bottom: 8px; text-align: center;">📋 ССЫЛКА СКОПИРОВАНА!</p>
+                        1. Откройте приложение <b>Happ Proxy</b>.<br>
+                        2. Нажмите на значок плюса <b>«+»</b> вверху справа.<br>
+                        3. Выберите пункт <b>«Добавить по URL»</b> (Add Subscription).<br>
+                        4. Вставьте скопированную ссылку и нажмите сохранить.
+                    </div>
+                `;
+            }).catch(err => {
+                console.error("Не удалось скопировать ссылку:", err);
+            });
+
+            // 2. Параллельно пробуем открыть Happ Proxy напрямую через систему (если телефон поддерживает)
             const deepLink = "clash://install-config?url=" + encodeURIComponent(subUrl) + "&name=Aurix_VPN";
-            
-            // Пробуем запустить автоматический переход
             window.location.href = deepLink;
-            
-            // Если браузер заблокировал авто-переход (требует физического клика)
-            setTimeout(() => {
-                const btn = document.getElementById('manual-btn');
-                if (btn) {
-                    btn.href = deepLink;
-                    document.getElementById('status').innerText = "Если приложение Happ не открылось автоматически, нажмите на кнопку ниже:";
-                    btn.classList.remove('hidden');
-                }
-            }, 500); // Сократили задержку до 0.5 сек для мгновенного появления кнопки
-        } else {
-            document.getElementById('status').innerText = "Ошибка: Ссылка на подписку отсутствует.";
         }
     </script>
 </body>
