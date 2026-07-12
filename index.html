@@ -111,7 +111,7 @@
 <body class="pb-24 overflow-x-hidden min-h-screen">
 
     <!-- Фоновые декоративные свечения -->
-    <div class="absolute inset-0 pointer-events-none overflow-hidden z-[-1]">
+    <div class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-[-1]">
         <div class="absolute top-[-10%] left-[10%] w-[300px] h-[300px] rounded-full bg-indigo-500/10 blur-[80px]"></div>
         <div class="absolute bottom-[20%] right-[-10%] w-[350px] h-[350px] rounded-full bg-pink-500/10 blur-[100px]"></div>
     </div>
@@ -155,7 +155,7 @@
             </div>
         </div>
 
-        <!-- КНОПКА МГНОВЕННОГО АВТО-ИМПОРТА В HAPP (АККУРАТНО ВСТАВЛЕНА СТРОГО ПОСЛЕ ТАЙМЕРА) -->
+        <!-- КНОПКА ПОДКЛЮЧЕНИЯ В ОДИН КЛИК (РАЗМЕЩЕНА СТРОГО ПОСЛЕ ТАЙМЕРА) -->
         <button onclick="importSubscriptionToHapp()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-4 rounded-2xl font-black text-sm text-center block shadow-[0_0_20px_rgba(90,84,240,0.35)] active:scale-[0.98] transition-all">
             ⚡ Подключить в один клик (Happ)
         </button>
@@ -619,7 +619,10 @@
     <script>
         const DOCS = {
             oferta: `📄 ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ\n\n1. Предмет соглашения:\nСервис Aurix VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше полное согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату и обмену не подлежат.`,
-            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы никогда не передаем ваши данные третьим лицам.`
+            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы никогда не передаем ваши данные третьим лицам.`,
+            my_subs: `💳 ВАШИ ПОДПИСКИ\n\nУ вас подключен тестовый/основной период подписки.\n\n▫️ Состояние: Активно\n▫️ Серверов доступно: 1 (Сверхскоростной)\n▫️ Протокол шифрования: VLESS Reality`,
+            withdraws: `📥 ИСТОРИЯ ВЫВОДОВ\n\nИстория выплат по реферальной программе:\n\nВыплат пока не производилось. Приглашайте друзей по реферальной ссылке в вашем профиле, чтобы заработать бонусные дни VPN!`,
+            payments: `🧾 ИСТОРИЯ ПЛАТЕЖЕЙ\n\nСписок ваших транзакций:\n\n▫️ Платежей по картам или криптовалюте не обнаружено.\n▫️ Пробный период 3 дня: Успешно начислен.`
         };
     </script>
 
@@ -1134,13 +1137,13 @@
                 }
             }
             
-            const univModal = document.getElementById('universal-modal');
-            if (univModal) univModal.classList.remove('hidden');
+            const universalModal = document.getElementById('universal-modal');
+            if (universalModal) universalModal.classList.remove('hidden');
         }
 
         function closeUniversalModal() {
-            const univModal = document.getElementById('universal-modal');
-            if (univModal) univModal.classList.add('hidden');
+            const universalModal = document.getElementById('universal-modal');
+            if (universalModal) universalModal.classList.add('hidden');
         }
 
         // Модальное окно стандартных документов
@@ -1276,6 +1279,23 @@
             }
         }
 
+        // Логика автоматического импорта ссылки на подписку в Happ Proxy
+        function importSubscriptionToHapp() {
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('heavy');
+            }
+            
+            // Ссылка на подписку с вашим Telegram ID
+            const subLink = "http://78.17.41.32:8000/sub/" + userTgId;
+            const encodedSub = encodeURIComponent(subLink);
+            
+            // Формируем глубокую ссылку для авто-импорта в Happ под именем Aurix_VPN
+            const deepLink = "sing-box://import-remote-profile?url=" + encodedSub + "#Aurix_VPN";
+            
+            // Команда на открытие ссылки из WebApp через прямой редирект
+            window.location.href = deepLink;
+        }
+
         // Логика проверки прямого перехода к авто-импорту (?import=...)
         if (importParam) {
             try {
@@ -1314,4 +1334,4 @@
         }
     </script>
 </body>
-</html>
+</html> 
