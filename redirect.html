@@ -3,29 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>Запуск Happ Proxy...</title>
-    <script>
-        // Считываем URL подписки из параметров
-        const params = new URLSearchParams(window.location.search);
-        const subUrl = params.get('url');
-        if (subUrl) {
-            const deepLink = "sing-box://import-remote-profile?url=" + encodeURIComponent(subUrl) + "#Aurix_VPN";
-            
-            // Мгновенный переход во внешнее приложение Happ
-            window.location.href = deepLink;
-            
-            // Если авто-переход не сработал за 1.5 секунды, показываем ручную кнопку
-            setTimeout(() => {
-                const btn = document.getElementById('manual-btn');
-                if (btn) {
-                    btn.href = deepLink;
-                    document.getElementById('status').innerText = "Если приложение Happ не открылось автоматически, нажмите на кнопку ниже:";
-                    btn.classList.remove('hidden');
-                }
-            }, 1500);
-        } else {
-            document.getElementById('status').innerText = "Ошибка: Ссылка на подписку отсутствует.";
-        }
-    </script>
     <style>
         body {
             background-color: #08070d;
@@ -66,5 +43,29 @@
         <p id="status" style="font-size: 14px; color: #707585; line-height: 1.6;">Перенаправляем в приложение Happ Proxy...</p>
         <a id="manual-btn" href="#" class="btn hidden">Открыть Happ Proxy</a>
     </div>
+
+    <!-- СКРИПТ ПЕРЕНЕСЕН В САМЫЙ НИЗ BODY ДЛЯ ГАРАНТИРОВАННОЙ РАБОТЫ -->
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const subUrl = params.get('url');
+        if (subUrl) {
+            const deepLink = "sing-box://import-remote-profile?url=" + encodeURIComponent(subUrl) + "#Aurix_VPN";
+            
+            // Пробуем запустить автоматический переход
+            window.location.href = deepLink;
+            
+            // Если браузер заблокировал авто-переход (требует физического клика)
+            setTimeout(() => {
+                const btn = document.getElementById('manual-btn');
+                if (btn) {
+                    btn.href = deepLink;
+                    document.getElementById('status').innerText = "Если приложение Happ не открылось автоматически, нажмите на кнопку ниже:";
+                    btn.classList.remove('hidden');
+                }
+            }, 500); // Сократили задержку до 0.5 сек для мгновенного появления кнопки
+        } else {
+            document.getElementById('status').innerText = "Ошибка: Ссылка на подписку отсутствует.";
+        }
+    </script>
 </body>
 </html> 
