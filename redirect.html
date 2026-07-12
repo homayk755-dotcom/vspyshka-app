@@ -49,7 +49,8 @@
         const params = new URLSearchParams(window.location.search);
         const subUrl = params.get('url');
         if (subUrl) {
-            const deepLink = "sing-box://import-remote-profile?url=" + encodeURIComponent(subUrl) + "#Aurix_VPN";
+            // Формируем универсальную глубокую ссылку Clash, которую нативно поддерживает Happ Proxy
+            const deepLink = "clash://install-config?url=" + encodeURIComponent(subUrl) + "&name=Aurix_VPN";
             
             // Пробуем запустить автоматический переход
             window.location.href = deepLink;
