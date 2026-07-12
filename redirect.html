@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Запуск Happ Proxy...</title>
+    <script>
+        // Считываем URL подписки из параметров
+        const params = new URLSearchParams(window.location.search);
+        const subUrl = params.get('url');
+        if (subUrl) {
+            const deepLink = "sing-box://import-remote-profile?url=" + encodeURIComponent(subUrl) + "#Aurix_VPN";
+            
+            // Мгновенный переход во внешнее приложение Happ
+            window.location.href = deepLink;
+            
+            // Если авто-переход не сработал за 1.5 секунды, показываем ручную кнопку
+            setTimeout(() => {
+                const btn = document.getElementById('manual-btn');
+                if (btn) {
+                    btn.href = deepLink;
+                    document.getElementById('status').innerText = "Если приложение Happ не открылось автоматически, нажмите на кнопку ниже:";
+                    btn.classList.remove('hidden');
+                }
+            }, 1500);
+        } else {
+            document.getElementById('status').innerText = "Ошибка: Ссылка на подписку отсутствует.";
+        }
+    </script>
+    <style>
+        body {
+            background-color: #08070d;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            background: linear-gradient(to right, #5a54f0, #7c3aed);
+            color: white;
+            font-weight: bold;
+            padding: 16px 30px;
+            border-radius: 16px;
+            text-decoration: none;
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(90, 84, 240, 0.4);
+            transition: transform 0.1s;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div style="max-width: 400px;">
+        <h2 style="font-weight: 900; margin-bottom: 10px; font-size: 24px; color: #5a54f0;">AURIX VPN ⚡</h2>
+        <p id="status" style="font-size: 14px; color: #707585; line-height: 1.6;">Перенаправляем в приложение Happ Proxy...</p>
+        <a id="manual-btn" href="#" class="btn hidden">Открыть Happ Proxy</a>
+    </div>
+</body>
+</html> 
