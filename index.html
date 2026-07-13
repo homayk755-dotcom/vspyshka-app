@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -155,7 +155,7 @@
             </div>
         </div>
 
-        <!-- КНОПКА ПОДКЛЮЧЕНИЯ В ОДИН КЛИК (РАЗМЕЩЕНА СТРОГО ПОСЛЕ ТАЙМЕРА) -->
+        <!-- КНОПКА ПОДКЛЮЧЕНИЯ В ОДИН КЛИК (АККУРАТНО ВСТАВЛЕНА СТРОГО ПОСЛЕ ТАЙМЕРА) -->
         <button onclick="importSubscriptionToHapp()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-4 rounded-2xl font-black text-sm text-center block shadow-[0_0_20px_rgba(90,84,240,0.35)] active:scale-[0.98] transition-all">
             ⚡ Подключить в один клик (Happ)
         </button>
@@ -226,7 +226,7 @@
                 </div>
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
-                        <span class="bg-indigo-500/20 text-indigo-300 text-[9px] uppercase font-extrabold px-3 py-1 rounded-full border border-indigo-500/40">Премиум тариф</span>
+                        <span class="bg-indigo-500/20 text-indigo-300 text-[9px] uppercase font-extrabold px-3 py-1 rounded-full border border-indigo-500/40">Premium тариф</span>
                         <span class="text-xs text-indigo-300 font-bold">3 месяца</span>
                     </div>
                     <div class="flex items-baseline gap-1 pt-2">
@@ -619,10 +619,7 @@
     <script>
         const DOCS = {
             oferta: `📄 ПОЛЬЗОВАТЕЛЬСКОЕ СОГЛАШЕНИЕ\n\n1. Предмет соглашения:\nСервис Aurix VPN предоставляет услуги зашифрованного соединения (VPN).\n\n2. Условия оплаты:\nОплата производится добровольно и подтверждает ваше полное согласие с правилами.\n\n3. Возврат средств:\nЦифровые товары надлежащего качества возврату и обмену не подлежат.`,
-            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы никогда не передаем ваши данные третьим лицам.`,
-            my_subs: `💳 ВАШИ ПОДПИСКИ\n\nУ вас подключен тестовый/основной период подписки.\n\n▫️ Состояние: Активно\n▫️ Серверов доступно: 1 (Сверхскоростной)\n▫️ Протокол шифрования: VLESS Reality`,
-            withdraws: `📥 ИСТОРИЯ ВЫВОДОВ\n\nИстория выплат по реферальной программе:\n\nВыплат пока не производилось. Приглашайте друзей по реферальной ссылке в вашем профиле, чтобы заработать бонусные дни VPN!`,
-            payments: `🧾 ИСТОРИЯ ПЛАТЕЖЕЙ\n\nСписок ваших транзакций:\n\n▫️ Платежей по картам или криптовалюте не обнаружено.\n▫️ Пробный период 3 дня: Успешно начислен.`
+            privacy: `🔒 ПОЛИТИКА КОНФИДЕНЦИАЛЬНОСТИ\n\n1. Данные:\nМы сохраняем только ваш Telegram ID и имя пользователя.\n\n2. Использование:\nДанные используются исключительно для функционирования личного кабинета подписки.\n\n3. Безопасность:\nМы никогда не передаем ваши данные третьим лицам.`
         };
     </script>
 
@@ -1284,16 +1281,16 @@
             if (tg && tg.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred('heavy');
             }
-    
+            
             // Ссылка на вашу подписку с первого сервера (порт 80)
             const subLink = "http://78.17.41.32/sub/" + userTgId;
-    
+            
             // Формируем команду добавления в Happ: happ://add/http://78.17.41.32/sub/user_id
             const targetUrl = "happ://add/" + subLink;
-    
+            
             // Формируем официальный мост-редиректор от разработчиков Happ Proxy
             const redirectUrl = "https://ssconnect.app/?q=" + encodeURIComponent(targetUrl);
-    
+            
             // Открываем во внешнем браузере через SDK Телеграма
             if (tg && tg.openLink) {
                 tg.openLink(redirectUrl);
