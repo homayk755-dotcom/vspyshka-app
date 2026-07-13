@@ -58,18 +58,59 @@
 <body>
     <div style="max-width: 350px; display: flex; flex-direction: column; align-items: center;">
         <h2 style="font-weight: 900; margin-bottom: 5px; font-size: 24px; color: #5a54f0; letter-spacing: 1px;">AURIX VPN ⚡</h2>
-        <p id="status" style="font-size: 13px; color: #707585; line-height: 1.5; margin-bottom: 15px;">Нажмите кнопку ниже для настройки подписки в Happ Proxy:</p>
+        <p id="status" style="font-size: 13px; color: #707585; line-height: 1.5; margin-bottom: 15px;">Перенаправляем в приложение...</p>
         
-        <!-- КНОПКА ВСЕГДА ВИДИМА И НАЧИНАЕТ СВЕРХУДОБНЫЙ ИМПОРТ -->
-        <button onclick="handleImport()" class="btn">⚡ ПОДКЛЮЧИТЬ ЧЕРЕЗ HAPP</button>
+        <!-- КНОПКА ЗАПУСКА -->
+        <button id="manual-btn" onclick="handleImport()" class="btn">⚡ ПОДКЛЮЧИТЬ VPN</button>
         
-        <!-- Сюда будет выводиться инструкция после клика -->
+        <!-- Контейнер для инструкции -->
         <div id="instruction-container"></div>
     </div>
 
     <script>
         const params = new URLSearchParams(window.location.search);
         const subUrl = params.get('url');
+        const targetApp = params.get('app') || 'incy'; // По умолчанию 'incy'
+
+        // Определяем настройки под выбранное приложение
+        let appName = "INCY";
+        let deepLink = "";
+        let instructions = "";
+
+        if (subUrl) {
+            if (targetApp === 'incy') {
+                appName = "INCY";
+                // Нативный формат авто-импорта INCY
+                deepLink = "incy://add/" + subUrl; 
+                instructions = `
+                    <p style="font-weight: 900; font-size: 14px; margin-top: 0; margin-bottom: 8px; text-align: center;">📋 ССЫЛКА СКОПИРОВАНА!</p>
+                    1. Откройте приложение <b>INCY</b>.<br>
+                    2. Перейдите во вкладку <b>«Подписки»</b> (в самом низу).<br>
+                    3. Нажмите на плюс <b>«+»</b> вверху справа.<br>
+                    4. Вставьте ссылку и нажмите сохранить.
+                `;
+            } else {
+                appName = "Happ Proxy";
+                // Нативный формат авто-импорта Happ
+                deepLink = "happ://add/" + subUrl;
+                instructions = `
+                    <p style="font-weight: 900; font-size: 14px; margin-top: 0; margin-bottom: 8px; text-align: center;">📋 ССЫЛКА СКОПИРОВАНА!</p>
+                    1. Откройте приложение <b>Happ Proxy</b>.<br>
+                    2. Нажмите на значок плюса <b>«+»</b> вверху справа.<br>
+                    3. Выберите пункт <b>«Добавить по URL»</b>.<br>
+                    4. Вставьте ссылку и сохраните.
+                `;
+            }
+        }
+
+        // Настраиваем стартовые тексты на экране под выбранное приложение
+        document.getElementById('status').innerText = "Перенаправляем в приложение " + appName + "...";
+        document.getElementById('manual-btn').innerText = "Открыть " + appName;
+
+        // Попытка мгновенного автоматического редиректа при загрузке страницы!
+        if (subUrl) {
+            window.location.href = deepLink;
+        }
 
         function handleImport() {
             if (!subUrl) {
@@ -77,24 +118,18 @@
                 return;
             }
 
-            // 1. Копируем ссылку подписки в буфер обмена телефона
+            // Копируем ссылку в буфер
             navigator.clipboard.writeText(subUrl).then(() => {
-                // Выводим красивую наглядную инструкцию на экран
                 document.getElementById('instruction-container').innerHTML = `
                     <div class="instruction-box">
-                        <p style="font-weight: 900; font-size: 14px; margin-top: 0; margin-bottom: 8px; text-align: center;">📋 ССЫЛКА СКОПИРОВАНА!</p>
-                        1. Откройте приложение <b>Happ Proxy</b>.<br>
-                        2. Нажмите на значок плюса <b>«+»</b> вверху справа.<br>
-                        3. Выберите пункт <b>«Добавить по URL»</b> (Add Subscription).<br>
-                        4. Вставьте скопированную ссылку и нажмите сохранить.
+                        ${instructions}
                     </div>
                 `;
             }).catch(err => {
-                console.error("Не удалось скопировать ссылку:", err);
+                console.error("Не удалось скопировать:", err);
             });
 
-            // 2. Параллельно пробуем открыть Happ Proxy напрямую через систему (если телефон поддерживает)
-            const deepLink = "clash://install-config?url=" + encodeURIComponent(subUrl) + "&name=Aurix_VPN";
+            // Пробуем запустить глубокую ссылку повторно по клику
             window.location.href = deepLink;
         }
     </script>
