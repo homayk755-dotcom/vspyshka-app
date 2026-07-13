@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -108,10 +108,10 @@
         }
     </style>
 </head>
-<body class="pb-24 overflow-x-hidden min-h-screen">
+<body class="pb-24 overflow-x-hidden min-h-screen relative">
 
-    <!-- Фоновые декоративные свечения -->
-    <div class="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-[-1]">
+    <!-- Декоративные фоновые ауры -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden z-[-1]">
         <div class="absolute top-[-10%] left-[10%] w-[300px] h-[300px] rounded-full bg-indigo-500/10 blur-[80px]"></div>
         <div class="absolute bottom-[20%] right-[-10%] w-[350px] h-[350px] rounded-full bg-pink-500/10 blur-[100px]"></div>
     </div>
@@ -155,10 +155,15 @@
             </div>
         </div>
 
-        <!-- КНОПКА ПОДКЛЮЧЕНИЯ В ОДИН КЛИК (АККУРАТНО ВСТАВЛЕНА СТРОГО ПОСЛЕ ТАЙМЕРА) -->
-        <button onclick="importSubscriptionToHapp()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-4 rounded-2xl font-black text-sm text-center block shadow-[0_0_20px_rgba(90,84,240,0.35)] active:scale-[0.98] transition-all">
-            ⚡ Подключить в один клик (Happ)
-        </button>
+        <!-- ДВЕ КНОПКИ АВТО-ИМПОРТА (ПОД ТАЙМЕРОМ) -->
+        <div class="space-y-3 mt-4">
+            <button onclick="importToIncy()" class="w-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white py-4 rounded-2xl font-black text-sm text-center block shadow-[0_0_20px_rgba(90,84,240,0.35)] active:scale-[0.98] transition-all">
+                ⚡ ПОДКЛЮЧИТЬ В INCY (Рекомендуем 👍)
+            </button>
+            <button onclick="importToHapp()" class="w-full bg-glass border-glass border py-4 rounded-2xl font-black text-center active:scale-[0.98] transition-transform duration-100 text-xs text-[var(--hint-color)]">
+                ⚡ Подключить в Happ Proxy
+            </button>
+        </div>
 
         <!-- Карточки тех. информации -->
         <div class="grid grid-cols-2 gap-3 fade-in-up delay-2">
@@ -561,23 +566,36 @@
             <p class="text-[10px] text-center text-[var(--hint-color)]">Наведите камеру Happ на этот код для мгновенного импорта</p>
         </div>
 
+        <!-- БЛОК ССЫЛОК НА СКАЧИВАНИЕ КЛИЕНТОВ (ДОБАВЛЕН INCY) -->
         <div class="bg-card border border-thin p-5 rounded-3xl space-y-4">
             <div class="text-center space-y-1">
-                <h3 class="font-bold text-sm">Приложение Happ не открылось?</h3>
-                <p class="text-xs text-[var(--hint-color)]">Возможно, на вашем устройстве не установлено приложение Happ. Пожалуйста, скачайте его:</p>
+                <h3 class="font-bold text-sm">Приложение не открылось автоматически?</h3>
+                <p class="text-xs text-[var(--hint-color)]">Рекомендуем скачать и установить один из лучших бесплатных VPN-клиентов на ваш телефон:</p>
             </div>
             
-            <div class="grid grid-cols-2 gap-2">
-                <a href="https://play.google.com/store/apps/details?id=com.happproxy" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🤖 Android</a>
-                <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🍏 iPhone</a>
+            <!-- Ссылки на INCY (Рекомендуемый современный клиент) -->
+            <div class="space-y-1.5">
+                <p class="text-[10px] uppercase font-bold text-indigo-400 tracking-wider">Option 1: INCY (Рекомендуем 👍)</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="https://play.google.com/store/apps/details?id=llc.itdev.incy" target="_blank" class="bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🤖 Android</a>
+                    <a href="https://apps.apple.com/us/app/incy/id6756943388" target="_blank" class="bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🍏 iPhone</a>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="https://incy.cc/" target="_blank" class="bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">💻 Windows / Mac</a>
+                </div>
             </div>
-            <div class="grid grid-cols-2 gap-2">
-                <a href="https://happ.info" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">💻 Windows</a>
-                <a href="https://happ.info" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🖥️ macOS</a>
+
+            <!-- Ссылки на Happ Proxy -->
+            <div class="space-y-1.5 pt-2 border-t border-white/5">
+                <p class="text-[10px] uppercase font-bold text-[var(--hint-color)] tracking-wider">Option 2: Happ Proxy</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <a href="https://play.google.com/store/apps/details?id=com.happproxy" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🤖 Android</a>
+                    <a href="https://apps.apple.com/us/app/happ-proxy-utility/id6504287215" target="_blank" class="bg-white/5 border border-white/10 py-3 rounded-xl text-xs font-bold text-center block active:scale-95 transition-all">🍏 iPhone</a>
+                </div>
             </div>
             
             <div class="space-y-2 pt-3 border-t border-white/5">
-                <p class="text-[11px] text-center text-[var(--hint-color)]">Или скопируйте ключ и вставьте его в приложение вручную:</p>
+                <p class="text-[11px] text-center text-[var(--hint-color)]">Или скопируйте вашу персональную ссылку и вставьте её в приложение вручную:</p>
                 <div class="flex gap-2">
                     <input id="import-key-input" type="text" readonly class="flex-1 bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-xs font-mono text-[var(--hint-color)] focus:outline-none">
                     <button onclick="copyImportKey()" class="bg-white/10 border border-white/10 text-white px-3 rounded-xl text-xs font-bold active:scale-95 transition-transform duration-100">Копировать</button>
@@ -1276,26 +1294,34 @@
             }
         }
 
-        // Логика автоматического импорта ссылки на подписку в Happ Proxy через официальный мост ssconnect.app
-        function importSubscriptionToHapp() {
+        // Импорт подписки в INCY (Рекомендуемый современный клиент)
+        function importToIncy() {
             if (tg && tg.HapticFeedback) {
                 tg.HapticFeedback.impactOccurred('heavy');
             }
-            
-            // Ссылка на вашу подписку с первого сервера (порт 80)
             const subLink = "http://78.17.41.32/sub/" + userTgId;
+            const deepLink = "incy://add/" + subLink; // Официальная команда импорта в INCY
             
-            // Формируем команду добавления в Happ: happ://add/http://78.17.41.32/sub/user_id
+            if (tg && tg.openLink) {
+                tg.openLink(deepLink);
+            } else {
+                window.location.href = deepLink;
+            }
+        }
+
+        // Импорт подписки в Happ Proxy (Через официальный мост-редиректор)
+        function importToHapp() {
+            if (tg && tg.HapticFeedback) {
+                tg.HapticFeedback.impactOccurred('heavy');
+            }
+            const subLink = "http://78.17.41.32/sub/" + userTgId;
             const targetUrl = "happ://add/" + subLink;
-            
-            // Формируем официальный мост-редиректор от разработчиков Happ Proxy
             const redirectUrl = "https://ssconnect.app/?q=" + encodeURIComponent(targetUrl);
             
-            // Открываем во внешнем браузере через SDK Телеграма
             if (tg && tg.openLink) {
                 tg.openLink(redirectUrl);
             } else {
-                window.open(redirectUrl, '_blank');
+                window.location.href = redirectUrl;
             }
         }
 
