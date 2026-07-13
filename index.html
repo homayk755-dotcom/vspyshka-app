@@ -1286,17 +1286,20 @@
                 tg.HapticFeedback.impactOccurred('heavy');
             }
     
-            // Ссылка на подписку с вашим Telegram ID
+            // Ссылка на вашу подписку с первого сервера (порт 80)
             const subLink = "http://78.17.41.32/sub/" + userTgId;
     
-            // Добавляем параметр &cb= с миллисекундами времени, чтобы Телеграм гарантированно скачал свежую версию страницы!
-            const redirectUrl = "https://homayk755-dotcom.github.io/vspyshka-app/redirect.html?url=" + encodeURIComponent(subLink) + "&cb=" + new Date().getTime();
+            // Формируем команду добавления в Happ: happ://add/http://78.17.41.32/sub/user_id
+            const targetUrl = "happ://add/" + subLink;
     
-            // Открываем во внешнем браузере
+            // Формируем официальный мост-редиректор от разработчиков Happ Proxy
+            const redirectUrl = "https://ssconnect.app/?q=" + encodeURIComponent(targetUrl);
+    
+            // Открываем во внешнем браузере через SDK Телеграма
             if (tg && tg.openLink) {
-            tg.openLink(redirectUrl);
+                tg.openLink(redirectUrl);
             } else {
-            window.open(redirectUrl, '_blank');
+                window.open(redirectUrl, '_blank');
             }
         }
 
